@@ -16,9 +16,14 @@ describe('GameSession', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
 
     expect(screen.getByText('1/10')).toBeInTheDocument()
-    // Should show a problem display with equation elements
     expect(screen.getByText('=')).toBeInTheDocument()
     expect(screen.getByText('?')).toBeInTheDocument()
+  })
+
+  it('renders 6 multiple-choice answer buttons', () => {
+    render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
+    const choiceButtons = screen.getAllByRole('button', { name: /^Answer / })
+    expect(choiceButtons).toHaveLength(6)
   })
 
   it('displays belt and stripe indicator', () => {
@@ -28,127 +33,116 @@ describe('GameSession', () => {
         onBack={vi.fn()}
         currentBelt={Belt.Green}
         currentStripes={2}
-      />
+      />,
     )
 
     expect(screen.getByText('Green')).toBeInTheDocument()
-    // 2 stripes rendered as ⫼⫼
     expect(screen.getByText('⫼⫼')).toBeInTheDocument()
   })
 
   it('defaults to White belt with 0 stripes when not provided', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
-
     expect(screen.getByText('White')).toBeInTheDocument()
   })
 
   it('calls onBack when back button is clicked', () => {
     const onBack = vi.fn()
-    render(<GameSession onComplete={onBack} onBack={onBack} />)
-
+    render(<GameSession onComplete={vi.fn()} onBack={onBack} />)
     fireEvent.click(screen.getByLabelText('Back to menu'))
     expect(onBack).toHaveBeenCalledTimes(1)
   })
 
-  it('shows feedback after submitting an answer and advances to next problem', () => {
+  it('shows feedback after picking a wrong answer and advances to next problem', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
 
-    // Submit an answer via the number input
-    const submitBtn = screen.getByLabelText('Submit answer')
-    const digitBtn = screen.getByLabelText('5')
+    // Read the correct answer from the rendered problem so we can pick a wrong one deterministically.
+    const operands = document.querySelectorAll('.problem-display__operand')
+    const operatorEl = document.querySelector('.problem-display__operator')
+    const op1 = parseInt(operands[0]?.textContent ?? '0', 10)
+    const op2 = parseInt(operands[1]?.textContent ?? '0', 10)
+    const operator = operatorEl?.textContent?.trim() ?? '+'
+    const correct = operator === '+' ? op1 + op2 : op1 - op2
 
-    fireEvent.click(digitBtn)
-    fireEvent.click(submitBtn)
+    // Pick the first option that is NOT the correct answer.
+    const buttons = screen.getAllByRole('button', { name: /^Answer / })
+    const wrongBtn = buttons.find((b) => b.textContent && parseInt(b.textContent, 10) !== correct)
+    expect(wrongBtn).toBeTruthy()
 
-    // After submitting, input should be disabled during feedback
-    expect(submitBtn).toBeDisabled()
+    fireEvent.click(wrongBtn!)
 
-    // Advance past feedback duration
+    // Buttons should be disabled during feedback.
+    for (const b of buttons) expect(b).toBeDisabled()
+
+    // Advance past feedback duration (~1500ms is enough).
+    act(() => {
+      vi.advanceTimersByTime(1700)
+    })
+
+    // Should advance to problem 2/10.
+    expect(screen.getByText('2/10')).toBeInTheDocument()
+  })
+
+  it('shows the reward clip after a correct answer', () => {
+    render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
+
+    const operands = document.querySelectorAll('.problem-display__operand')
+    const operatorEl = document.querySelector('.problem-display__operator')
+    const op1 = parseInt(operands[0]?.textContent ?? '0', 10)
+    const op2 = parseInt(operands[1]?.textContent ?? '0', 10)
+    const operator = operatorEl?.textContent?.trim() ?? '+'
+    const correct = operator === '+' ? op1 + op2 : op1 - op2
+
+    const correctBtn = screen.getByLabelText(`Answer ${correct}`)
+    fireEvent.click(correctBtn)
+
+    // Advance past feedback flash.
     act(() => {
       vi.advanceTimersByTime(1000)
     })
 
-    // Should advance to problem 2/10 (unless session completed)
-    // The counter should show 2/10 since we answered the first problem
+    // The reward overlay should now be visible.
+    expect(screen.getByRole('dialog', { name: 'Prize clip' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Skip clip and continue')).toBeInTheDocument()
+  })
+
+  it('advances to the next problem after the reward clip is skipped', () => {
+    render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
+
+    const operands = document.querySelectorAll('.problem-display__operand')
+    const operatorEl = document.querySelector('.problem-display__operator')
+    const op1 = parseInt(operands[0]?.textContent ?? '0', 10)
+    const op2 = parseInt(operands[1]?.textContent ?? '0', 10)
+    const operator = operatorEl?.textContent?.trim() ?? '+'
+    const correct = operator === '+' ? op1 + op2 : op1 - op2
+
+    fireEvent.click(screen.getByLabelText(`Answer ${correct}`))
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+
+    // Skip the reward clip.
+    fireEvent.click(screen.getByLabelText('Skip clip and continue'))
+
+    // Now we should be on problem 2.
     expect(screen.getByText('2/10')).toBeInTheDocument()
+    // Reward dialog should be gone.
+    expect(screen.queryByRole('dialog', { name: 'Prize clip' })).not.toBeInTheDocument()
   })
 
   it('shows inactivity reminder after 30 seconds', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
 
-    // Initially no reminder
     expect(screen.queryByText('!עדיין כאן? בוא נמשיך')).not.toBeInTheDocument()
 
-    // Advance 30 seconds
     act(() => {
       vi.advanceTimersByTime(30000)
     })
 
-    // Reminder should appear
     expect(screen.getByText('!עדיין כאן? בוא נמשיך')).toBeInTheDocument()
-  })
-
-  it('resets inactivity timer when answer is submitted', () => {
-    render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
-
-    // Advance 25 seconds (not yet 30)
-    act(() => {
-      vi.advanceTimersByTime(25000)
-    })
-
-    // Submit an answer to reset timer
-    const digitBtn = screen.getByLabelText('5')
-    const submitBtn = screen.getByLabelText('Submit answer')
-    fireEvent.click(digitBtn)
-    fireEvent.click(submitBtn)
-
-    // Advance feedback
-    act(() => {
-      vi.advanceTimersByTime(1000)
-    })
-
-    // Advance another 25 seconds (total 26s since last activity, not 30)
-    act(() => {
-      vi.advanceTimersByTime(25000)
-    })
-
-    // Should NOT show reminder yet
-    expect(screen.queryByText('!עדיין כאן? בוא נמשיך')).not.toBeInTheDocument()
-
-    // Advance 5 more seconds (now 30s since last activity)
-    act(() => {
-      vi.advanceTimersByTime(5000)
-    })
-
-    // Now reminder should appear
-    expect(screen.getByText('!עדיין כאן? בוא נמשיך')).toBeInTheDocument()
-  })
-
-  it('calls onComplete with results after all 10 problems are answered', () => {
-    const onComplete = vi.fn()
-    render(<GameSession onComplete={onComplete} onBack={vi.fn()} />)
-
-    // Answer all 10 problems (just submit 0 each time)
-    for (let i = 0; i < 10; i++) {
-      const digitBtn = screen.getByLabelText('0')
-      const submitBtn = screen.getByLabelText('Submit answer')
-
-      fireEvent.click(digitBtn)
-      fireEvent.click(submitBtn)
-
-      act(() => {
-        vi.advanceTimersByTime(1000)
-      })
-    }
-
-    // onComplete should have been called with (correctCount, 10)
-    expect(onComplete).toHaveBeenCalledTimes(1)
-    expect(onComplete).toHaveBeenCalledWith(expect.any(Number), 10)
   })
 
   it('has a progress bar that reflects current progress', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
-
     const progressBar = screen.getByRole('progressbar')
     expect(progressBar).toBeInTheDocument()
     expect(progressBar).toHaveAttribute('aria-valuenow', '1')

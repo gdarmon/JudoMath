@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Belt } from '../types'
 import type { MathProblem } from '../types'
-import { generateSession } from '../logic/problemGenerator'
-import { validateAnswer } from '../logic/problemGenerator'
+import { generateSession, validateAnswer } from '../logic/problemGenerator'
+import { pickNextClip, pickFallbackClip } from '../logic/clipRotation'
+import { JUDO_CLIPS, CLIP_DURATION_SECONDS } from '../data/judoClips'
+import type { JudoClip } from '../data/judoClips'
 import { ProblemDisplay } from './ProblemDisplay'
-import { NumberInput } from './NumberInput'
+import { AnswerChoices } from './AnswerChoices'
+import { RewardClip } from './RewardClip'
 import './GameSession.css'
 
 export interface GameSessionProps {
@@ -15,10 +18,9 @@ export interface GameSessionProps {
 }
 
 const PROBLEMS_PER_SESSION = 10
-const FEEDBACK_DURATION_MS = 1000
+const FEEDBACK_DURATION_MS = 900
 const INACTIVITY_TIMEOUT_MS = 30000
 
-/** Maps Belt enum values to display names */
 const BELT_NAMES: Record<Belt, string> = {
   [Belt.White]: 'White',
   [Belt.Yellow]: 'Yellow',
@@ -29,7 +31,6 @@ const BELT_NAMES: Record<Belt, string> = {
   [Belt.Black]: 'Black',
 }
 
-/** Maps Belt enum values to CSS colors */
 const BELT_COLORS: Record<Belt, string> = {
   [Belt.White]: '#f5f5f5',
   [Belt.Yellow]: '#fdd835',
@@ -40,7 +41,6 @@ const BELT_COLORS: Record<Belt, string> = {
   [Belt.Black]: '#212121',
 }
 
-/** Maps Belt enum values to text colors for contrast */
 const BELT_TEXT_COLORS: Record<Belt, string> = {
   [Belt.White]: '#333333',
   [Belt.Yellow]: '#333333',
@@ -51,11 +51,6 @@ const BELT_TEXT_COLORS: Record<Belt, string> = {
   [Belt.Black]: '#ffffff',
 }
 
-/**
- * Game Session screen component.
- * Manages a session of 10 math problems, tracks answers,
- * shows progress, and handles inactivity reminders.
- */
 export function GameSession({ onComplete, onBack, currentBelt, currentStripes }: GameSessionProps) {
   const beltValue = currentBelt ?? Belt.White
   const stripes = currentStripes ?? 0
@@ -67,81 +62,108 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false)
   const [inputDisabled, setInputDisabled] = useState(false)
   const [isInactive, setIsInactive] = useState(false)
+  const [pickedAnswer, setPickedAnswer] = useState<number | null>(null)
+  const [reward, setReward] = useState<JudoClip | null>(null)
+  const failedClipsRef = useRef<Set<string>>(new Set())
 
   const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pendingNextRef = useRef<(() => void) | null>(null)
 
   const currentProblem = problems[currentIndex]
 
-  // Reset inactivity timer on any activity
   const resetInactivityTimer = useCallback(() => {
     setIsInactive(false)
-    if (inactivityTimerRef.current) {
-      clearTimeout(inactivityTimerRef.current)
-    }
-    inactivityTimerRef.current = setTimeout(() => {
-      setIsInactive(true)
-    }, INACTIVITY_TIMEOUT_MS)
+    if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current)
+    inactivityTimerRef.current = setTimeout(() => setIsInactive(true), INACTIVITY_TIMEOUT_MS)
   }, [])
 
-  // Start inactivity timer on mount and reset on index change
   useEffect(() => {
     resetInactivityTimer()
     return () => {
-      if (inactivityTimerRef.current) {
-        clearTimeout(inactivityTimerRef.current)
-      }
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current)
     }
   }, [currentIndex, resetInactivityTimer])
 
-  // Cleanup feedback timer on unmount
   useEffect(() => {
     return () => {
-      if (feedbackTimerRef.current) {
-        clearTimeout(feedbackTimerRef.current)
-      }
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
     }
   }, [])
 
-  const handleAnswerSubmit = useCallback((answer: number) => {
-    // Reset inactivity on interaction
-    resetInactivityTimer()
-
-    const isCorrect = validateAnswer(currentProblem, answer)
-
-    if (isCorrect) {
-      setCorrectCount(prev => prev + 1)
-      setFeedback('correct')
-      setShowCorrectAnswer(false)
-    } else {
-      setFeedback('incorrect')
-      setShowCorrectAnswer(true)
-    }
-
-    setInputDisabled(true)
-
-    // After feedback duration, advance to next problem or complete session
-    feedbackTimerRef.current = setTimeout(() => {
+  const advanceOrFinish = useCallback(
+    (finalCorrect: number) => {
       const nextIndex = currentIndex + 1
-
       if (nextIndex >= PROBLEMS_PER_SESSION) {
-        // Session complete
-        const finalCorrect = isCorrect ? correctCount + 1 : correctCount
         onComplete(finalCorrect, PROBLEMS_PER_SESSION)
       } else {
         setCurrentIndex(nextIndex)
         setFeedback(null)
         setShowCorrectAnswer(false)
         setInputDisabled(false)
+        setPickedAnswer(null)
       }
-    }, FEEDBACK_DURATION_MS)
-  }, [currentProblem, currentIndex, correctCount, onComplete, resetInactivityTimer])
+    },
+    [currentIndex, onComplete],
+  )
+
+  const handleAnswerSubmit = useCallback(
+    (answer: number) => {
+      if (inputDisabled) return
+      resetInactivityTimer()
+
+      const isCorrect = validateAnswer(currentProblem, answer)
+      setPickedAnswer(answer)
+      setInputDisabled(true)
+
+      if (isCorrect) {
+        setCorrectCount((prev) => prev + 1)
+        setFeedback('correct')
+        setShowCorrectAnswer(false)
+
+        // Queue the reward clip after the brief feedback flash.
+        feedbackTimerRef.current = setTimeout(() => {
+          const clip = pickNextClip(JUDO_CLIPS)
+          // Stash the next-step action — runs when the reward clip closes.
+          pendingNextRef.current = () => advanceOrFinish(correctCount + 1)
+          setReward(clip)
+        }, FEEDBACK_DURATION_MS)
+      } else {
+        setFeedback('incorrect')
+        setShowCorrectAnswer(true)
+
+        feedbackTimerRef.current = setTimeout(() => {
+          advanceOrFinish(correctCount)
+        }, FEEDBACK_DURATION_MS + 600) // Slightly longer so the kid sees the right answer.
+      }
+    },
+    [advanceOrFinish, correctCount, currentProblem, inputDisabled, resetInactivityTimer],
+  )
+
+  const handleRewardClose = useCallback(() => {
+    setReward(null)
+    failedClipsRef.current = new Set()
+    const next = pendingNextRef.current
+    pendingNextRef.current = null
+    if (next) next()
+  }, [])
+
+  /** If a clip fails to embed, swap to a different one without disrupting the flow. */
+  const handleRewardError = useCallback((failedYoutubeId: string) => {
+    failedClipsRef.current.add(failedYoutubeId)
+    const fallback = pickFallbackClip(JUDO_CLIPS, failedClipsRef.current)
+    if (fallback) {
+      setReward(fallback)
+    } else {
+      // Out of clips — just close and continue.
+      handleRewardClose()
+    }
+  }, [handleRewardClose])
 
   const progressPercent = (currentIndex / PROBLEMS_PER_SESSION) * 100
 
   return (
     <div className={`game-session ${isInactive ? 'game-session--inactive' : ''}`}>
-      {/* Header: back button, progress, belt indicator */}
       <header className="game-session__header">
         <button
           className="game-session__back-btn"
@@ -153,7 +175,10 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
         </button>
 
         <div className="game-session__progress-info">
-          <span className="game-session__problem-counter" aria-label={`Problem ${currentIndex + 1} of ${PROBLEMS_PER_SESSION}`}>
+          <span
+            className="game-session__problem-counter"
+            aria-label={`Problem ${currentIndex + 1} of ${PROBLEMS_PER_SESSION}`}
+          >
             {currentIndex + 1}/{PROBLEMS_PER_SESSION}
           </span>
         </div>
@@ -173,15 +198,19 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
         </div>
       </header>
 
-      {/* Progress bar */}
-      <div className="game-session__progress-bar" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={PROBLEMS_PER_SESSION}>
+      <div
+        className="game-session__progress-bar"
+        role="progressbar"
+        aria-valuenow={currentIndex + 1}
+        aria-valuemin={1}
+        aria-valuemax={PROBLEMS_PER_SESSION}
+      >
         <div
           className="game-session__progress-fill"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
 
-      {/* Inactivity reminder */}
       {isInactive && (
         <div className="game-session__reminder" aria-live="polite">
           <span className="game-session__reminder-icon" role="img" aria-label="Reminder">👋</span>
@@ -189,7 +218,6 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
         </div>
       )}
 
-      {/* Problem display */}
       <div className="game-session__problem">
         <ProblemDisplay
           problem={currentProblem}
@@ -198,13 +226,25 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
         />
       </div>
 
-      {/* Number input */}
       <div className="game-session__input">
-        <NumberInput
-          onSubmit={handleAnswerSubmit}
+        <AnswerChoices
+          problem={currentProblem}
+          onSelect={handleAnswerSubmit}
           disabled={inputDisabled}
+          selectedAnswer={pickedAnswer}
+          showCorrect={feedback !== null}
         />
       </div>
+
+      {reward && (
+        <RewardClip
+          clip={reward}
+          durationSeconds={CLIP_DURATION_SECONDS}
+          onSkip={handleRewardClose}
+          onComplete={handleRewardClose}
+          onError={handleRewardError}
+        />
+      )}
     </div>
   )
 }

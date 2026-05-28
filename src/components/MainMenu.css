@@ -1,167 +1,299 @@
-/* Main Menu - Child-friendly, Judo-themed */
+/* Main Menu — vibrant landing page for ages 6-7. */
 
 .main-menu {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  justify-content: center;
   padding: 32px 16px;
+  gap: 32px;
+  background:
+    radial-gradient(circle at 20% 20%, #ff9a9e 0%, transparent 45%),
+    radial-gradient(circle at 80% 30%, #fad0c4 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, #fbc2eb 0%, transparent 45%),
+    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
 }
 
-/* Header with avatar and title */
-.main-menu__header {
+/* --- Drifting background math symbols --- */
+.main-menu__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.main-menu__bg-symbol {
+  position: absolute;
+  font-size: 72px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.18);
+  user-select: none;
+  will-change: transform;
+}
+
+.main-menu__bg-symbol--1 { top: 10%;  left:  8%; animation: drift-a 14s ease-in-out infinite; }
+.main-menu__bg-symbol--2 { top: 20%;  left: 80%; animation: drift-b 16s ease-in-out infinite; font-size: 96px; }
+.main-menu__bg-symbol--3 { top: 70%;  left: 12%; animation: drift-c 18s ease-in-out infinite; font-size: 64px; }
+.main-menu__bg-symbol--4 { top: 60%;  left: 85%; animation: drift-a 12s ease-in-out infinite reverse; font-size: 88px; }
+.main-menu__bg-symbol--5 { top: 35%;  left: 50%; animation: drift-b 20s ease-in-out infinite; font-size: 56px; }
+.main-menu__bg-symbol--6 { top: 85%;  left: 60%; animation: drift-c 13s ease-in-out infinite reverse; font-size: 80px; }
+.main-menu__bg-symbol--7 { top:  5%;  left: 45%; animation: drift-a 17s ease-in-out infinite; font-size: 60px; }
+.main-menu__bg-symbol--8 { top: 50%;  left: 25%; animation: drift-b 15s ease-in-out infinite reverse; font-size: 70px; }
+
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0)   rotate(0deg); }
+  50%      { transform: translate(20px, -25px) rotate(15deg); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0)   rotate(0deg); }
+  50%      { transform: translate(-25px, 20px) rotate(-12deg); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate(0, 0)   rotate(0deg); }
+  50%      { transform: translate(15px, 18px) rotate(20deg); }
+}
+
+/* --- Hero card with avatar + title --- */
+.main-menu__hero {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
+  padding: 28px 32px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  max-width: 540px;
+  width: 100%;
+  animation: hero-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+@keyframes hero-in {
+  from { transform: translateY(20px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+/* --- Avatar with concentric rings --- */
+.main-menu__avatar-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-menu__avatar-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px dashed rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.main-menu__avatar-ring--1 {
+  inset: 0;
+  animation: ring-spin 12s linear infinite;
+}
+
+.main-menu__avatar-ring--2 {
+  inset: 14px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.35);
+  animation: ring-spin 18s linear infinite reverse;
+}
+
+@keyframes ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.main-menu__avatar-icon {
+  font-size: 84px;
+  line-height: 1;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.3));
+  animation: avatar-bounce 2.4s ease-in-out infinite;
+}
+
+@keyframes avatar-bounce {
+  0%, 100% { transform: translateY(0)    rotate(-3deg); }
+  50%      { transform: translateY(-8px) rotate( 3deg); }
+}
+
+/* --- Title --- */
 .main-menu__title {
-  font-size: 48px;
-  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
   margin: 0;
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.main-menu__title-judo {
   background: linear-gradient(135deg, #ff6b6b, #ffa500, #fdd835);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Avatar section */
-.main-menu__avatar {
+.main-menu__title-math {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d, #093637);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.main-menu__tagline {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 8px;
-}
-
-.main-menu__avatar-icon {
-  font-size: 64px;
-  display: block;
-  animation: gentle-bounce 2s ease-in-out infinite;
-}
-
-@keyframes gentle-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-.main-menu__belt-badge {
-  display: inline-block;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 14px;
+  margin: 0;
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  text-align: center;
 }
 
-.main-menu__stripes {
+.main-menu__tagline-emoji { font-size: 22px; }
+
+/* --- Belt badge --- */
+.main-menu__belt-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 18px;
   font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-/* Navigation buttons */
+.main-menu__belt-stripes {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.main-menu__stripe {
+  width: 14px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.main-menu__stripe--earned {
+  background: linear-gradient(135deg, #fdd835, #ffb300);
+  box-shadow: 0 0 8px rgba(253, 216, 53, 0.7);
+}
+
+/* --- Action buttons --- */
 .main-menu__nav {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: 320px;
+  max-width: 360px;
 }
 
 .main-menu__button {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 16px;
+  row-gap: 0;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 20px 32px;
-  border: none;
+  padding: 18px 24px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
   border-radius: 24px;
-  font-size: 24px;
-  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  min-height: 72px;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: left;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  touch-action: manipulation;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
 .main-menu__button:hover {
-  transform: scale(1.04);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px) scale(1.02);
+  border-color: #ffffff;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
 }
 
 .main-menu__button:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .main-menu__button:focus-visible {
-  outline: 3px solid #333;
-  outline-offset: 3px;
+  outline: 4px solid #ffeb3b;
+  outline-offset: 4px;
 }
 
-/* Button color variants */
 .main-menu__button--play {
-  background: linear-gradient(135deg, #4caf50, #66bb6a);
-  color: #ffffff;
+  background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
 }
 
 .main-menu__button--tournament {
-  background: linear-gradient(135deg, #ff9800, #ffb74d);
-  color: #ffffff;
+  background: linear-gradient(135deg, #ff7043 0%, #ffa726 100%);
 }
 
 .main-menu__button--profile {
-  background: linear-gradient(135deg, #2196f3, #64b5f6);
-  color: #ffffff;
+  background: linear-gradient(135deg, #1e88e5 0%, #42a5f5 100%);
 }
 
 .main-menu__button-icon {
-  font-size: 32px;
+  grid-row: 1 / 3;
+  font-size: 44px;
   line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
 }
 
 .main-menu__button-label {
-  font-size: 24px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
-/* Responsive adjustments */
+.main-menu__button-sub {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.92;
+  margin-top: 2px;
+}
+
+/* --- Responsive --- */
 @media (max-width: 767px) {
-  .main-menu__title {
-    font-size: 36px;
-  }
-
-  .main-menu__avatar-icon {
-    font-size: 48px;
-  }
-
-  .main-menu__button {
-    padding: 16px 24px;
-    min-height: 64px;
-  }
-
-  .main-menu__button-icon {
-    font-size: 28px;
-  }
-
-  .main-menu__button-label {
-    font-size: 20px;
-  }
+  .main-menu { padding: 24px 14px; gap: 24px; }
+  .main-menu__hero { padding: 22px 22px; gap: 14px; border-radius: 26px; }
+  .main-menu__avatar-wrap { width: 120px; height: 120px; }
+  .main-menu__avatar-icon { font-size: 68px; }
+  .main-menu__title { font-size: 48px; gap: 10px; }
+  .main-menu__tagline { font-size: 14px; }
+  .main-menu__belt-badge { font-size: 15px; padding: 8px 16px; }
+  .main-menu__button { padding: 14px 18px; column-gap: 12px; border-radius: 20px; }
+  .main-menu__button-icon { font-size: 36px; }
+  .main-menu__button-label { font-size: 22px; }
+  .main-menu__button-sub { font-size: 12px; }
+  .main-menu__bg-symbol { font-size: 48px !important; }
 }
 
 @media (min-width: 768px) {
-  .main-menu__nav {
-    flex-direction: row;
-    max-width: 600px;
-    gap: 20px;
-  }
-
-  .main-menu__button {
-    flex: 1;
-    flex-direction: column;
-    padding: 24px 16px;
-    min-height: 120px;
-  }
-
-  .main-menu__button-icon {
-    font-size: 40px;
-  }
+  .main-menu__nav { max-width: 600px; flex-direction: row; }
+  .main-menu__button { flex: 1; }
 }

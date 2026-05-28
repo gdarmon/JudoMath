@@ -1,0 +1,92 @@
+/* Six-button answer grid. Big, touch-friendly, child-friendly. */
+
+.answer-choices {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.answer-choices__btn {
+  font-size: 36px;
+  font-weight: 700;
+  min-height: 72px;
+  padding: 16px 8px;
+  border-radius: 18px;
+  border: 3px solid #e5e4e7;
+  background: #ffffff;
+  color: #2d2a33;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.answer-choices__btn:hover:not(:disabled) {
+  background: #f5f1ff;
+  border-color: #c8b6ff;
+  box-shadow: 0 4px 12px rgba(124, 77, 255, 0.15);
+}
+
+.answer-choices__btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.answer-choices__btn:focus-visible {
+  outline: 3px solid #7c4dff;
+  outline-offset: 2px;
+}
+
+.answer-choices__btn:disabled {
+  cursor: not-allowed;
+}
+
+/* Selected (during pre-feedback latch — rare since we react instantly). */
+.answer-choices__btn--selected {
+  background: #ede1ff;
+  border-color: #7c4dff;
+}
+
+/* Correct answer highlighted after the child has answered. */
+.answer-choices__btn--correct {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  border-color: #2e7d32;
+  color: #ffffff;
+  animation: answer-correct-pulse 0.5s ease;
+}
+
+@keyframes answer-correct-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* The kid's wrong pick stays red so they can see what they chose. */
+.answer-choices__btn--wrong {
+  background: linear-gradient(135deg, #ef5350, #e57373);
+  border-color: #c62828;
+  color: #ffffff;
+  animation: answer-wrong-shake 0.4s ease;
+}
+
+@keyframes answer-wrong-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@media (max-width: 767px) {
+  .answer-choices__btn {
+    font-size: 30px;
+    min-height: 64px;
+  }
+}
+
+@media (min-width: 768px) {
+  .answer-choices__btn {
+    font-size: 42px;
+    min-height: 84px;
+  }
+}

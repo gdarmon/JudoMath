@@ -11,7 +11,10 @@ const leaderboardEntryArb: fc.Arbitrary<LeaderboardEntry> = fc.record({
   playerName: fc.string({ minLength: 1, maxLength: 20 }),
   totalScore: fc.integer({ min: 0, max: 300 }),
   totalTime: fc.integer({ min: 1000, max: 600000 }),
-  date: fc.date({ min: new Date('2020-01-01'), max: new Date('2025-12-31') }).map((d) => d.toISOString().split('T')[0]),
+  // Use a stable timestamp range to avoid fc.date edge values that fail toISOString().
+  date: fc
+    .integer({ min: 1577836800000, max: 1767139200000 }) // 2020-01-01 .. 2025-12-31
+    .map((ms) => new Date(ms).toISOString().split('T')[0]),
 });
 
 describe('Feature: judo-math-game, Property 8: Leaderboard ordering and size', () => {
