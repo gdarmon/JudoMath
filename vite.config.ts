@@ -5,11 +5,12 @@ import { VitePWA } from 'vite-plugin-pwa'
 // https://vite.dev/config/
 // Base path: '/JudoMath/' for GitHub Pages production builds, '/' for local dev.
 // Override via the VITE_BASE env var if the repo is renamed or hosted elsewhere.
-const base = process.env.VITE_BASE ?? (process.env.NODE_ENV === 'production' ? '/JudoMath/' : '/')
+export default defineConfig(({ command }) => {
+  const base = process.env.VITE_BASE ?? (command === 'build' ? '/JudoMath/' : '/')
 
-export default defineConfig({
-  base,
-  plugins: [
+  return {
+    base,
+    plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -105,5 +106,6 @@ export default defineConfig({
         ],
       },
     }),
-  ],
+    ],
+  }
 })
