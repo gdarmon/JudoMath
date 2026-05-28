@@ -30,9 +30,15 @@ function getTournamentMessage(score: number): string {
 }
 
 export function TournamentResults({ result, onMainMenu, onPlayAgain }: TournamentResultsProps) {
-  const emoji = getTournamentEmoji(result.totalScore)
-  const message = getTournamentMessage(result.totalScore)
-  const isGreatScore = result.totalScore >= 75
+  const isChampionship = result.placement !== undefined && result.championshipStage !== undefined
+  const emoji = isChampionship && result.placement === 1 ? '🏆' : getTournamentEmoji(result.totalScore)
+  const message = isChampionship
+    ? TOURNAMENT_RESULTS.placementMessage(result.placement!)
+    : getTournamentMessage(result.totalScore)
+  const isGreatScore = isChampionship ? result.placement! <= 3 : result.totalScore >= 75
+  const playAgainLabel = isChampionship
+    ? TOURNAMENT_RESULTS.playChampionshipAgain
+    : TOURNAMENT_RESULTS.playAgain
 
   return (
     <div className="tournament-results" role="region" aria-label={TOURNAMENT_RESULTS.regionLabel}>
@@ -41,16 +47,53 @@ export function TournamentResults({ result, onMainMenu, onPlayAgain }: Tournamen
       >
         <span className="tournament-results__emoji" aria-hidden="true">{emoji}</span>
         <h2 className="tournament-results__message">{message}</h2>
+        {isChampionship && (
+          <p className="tournament-results__stage">
+            {result.championshipStage!.title}
+          </p>
+        )}
       </div>
 
       <div
-        className="tournament-results__score"
-        aria-label={TOURNAMENT_RESULTS.scoreAria(result.totalScore)}
+        className={`tournament-results__score ${
+          isChampionship ? 'tournament-results__score--placement' : ''
+        }`}
+        aria-label={
+          isChampionship
+            ? TOURNAMENT_RESULTS.placementAria(result.placement!)
+            : TOURNAMENT_RESULTS.scoreAria(result.totalScore)
+        }
       >
-        <span className="tournament-results__score-value is-ltr">{result.totalScore}%</span>
+        {isChampionship ? (
+          <>
+            <span className="tournament-results__score-label">
+              {TOURNAMENT_RESULTS.placementLabel}
+            </span>
+            <span className="tournament-results__score-value is-ltr">
+              {result.placement}
+            </span>
+          </>
+        ) : (
+          <span className="tournament-results__score-value is-ltr">{result.totalScore}%</span>
+        )}
       </div>
 
       <div className="tournament-results__stats">
+        {isChampionship && (
+          <div className="tournament-results__stat">
+            <span className="tournament-results__stat-icon" aria-hidden="true">✓</span>
+            <span className="tournament-results__stat-label">
+              {TOURNAMENT_RESULTS.correctLabel}
+            </span>
+            <span className="tournament-results__stat-value is-ltr">
+              {TOURNAMENT_RESULTS.correctValue(
+                result.totalCorrect ?? 0,
+                result.totalProblems ?? 0,
+              )}
+            </span>
+          </div>
+        )}
+
         <div className="tournament-results__stat">
           <span className="tournament-results__stat-icon" aria-hidden="true">⏱️</span>
           <span className="tournament-results__stat-label">{TOURNAMENT_RESULTS.timeLabel}</span>
@@ -64,12 +107,20 @@ export function TournamentResults({ result, onMainMenu, onPlayAgain }: Tournamen
 
         <div className="tournament-results__stat">
           <span className="tournament-results__stat-icon" aria-hidden="true">📋</span>
-          <span className="tournament-results__stat-label">{TOURNAMENT_RESULTS.sessionsLabel}</span>
+          <span className="tournament-results__stat-label">
+            {isChampionship ? TOURNAMENT_RESULTS.questionsLabel : TOURNAMENT_RESULTS.sessionsLabel}
+          </span>
           <span
             className="tournament-results__stat-value is-ltr"
-            aria-label={TOURNAMENT_RESULTS.sessionsAria(result.sessionsCompleted, 3)}
+            aria-label={
+              isChampionship
+                ? `${result.totalProblems ?? 0} ${TOURNAMENT_RESULTS.questionsLabel}`
+                : TOURNAMENT_RESULTS.sessionsAria(result.sessionsCompleted, 3)
+            }
           >
-            {TOURNAMENT_RESULTS.sessionsValue(result.sessionsCompleted, 3)}
+            {isChampionship
+              ? result.totalProblems ?? 0
+              : TOURNAMENT_RESULTS.sessionsValue(result.sessionsCompleted, 3)}
           </span>
         </div>
       </div>
@@ -79,10 +130,10 @@ export function TournamentResults({ result, onMainMenu, onPlayAgain }: Tournamen
           type="button"
           className="tournament-results__button tournament-results__button--play-again"
           onClick={onPlayAgain}
-          aria-label={TOURNAMENT_RESULTS.playAgain}
+          aria-label={playAgainLabel}
         >
           <span className="tournament-results__button-icon" aria-hidden="true">🔄</span>
-          <span className="tournament-results__button-label">{TOURNAMENT_RESULTS.playAgain}</span>
+          <span className="tournament-results__button-label">{playAgainLabel}</span>
         </button>
 
         <button

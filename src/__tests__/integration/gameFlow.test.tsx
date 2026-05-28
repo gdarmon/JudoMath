@@ -16,6 +16,7 @@ import {
   beltLabel,
   NUMPAD,
 } from '../../i18n/he'
+import { getChampionshipStageForBelt } from '../../logic/championship'
 
 // Mock lottie-react to avoid canvas dependency in jsdom.
 vi.mock('lottie-react', () => ({
@@ -256,28 +257,29 @@ describe('Integration: Tournament Flow', () => {
     vi.useRealTimers()
   })
 
-  it('completes a tournament: 3 sessions × 10 problems → tournament results', async () => {
+  it('completes a championship event: intro → 20 timed problems → placement results', async () => {
     render(<App />)
     await initApp()
 
     fireEvent.click(screen.getByLabelText(MENU.tournament))
-    expect(screen.getByText('1/3')).toBeInTheDocument()
-    expect(screen.getByText(TOURNAMENT.problemLabel(1, 10))).toBeInTheDocument()
+    const stage = getChampionshipStageForBelt(Belt.White)
+    expect(
+      screen.getByRole('region', { name: TOURNAMENT.championshipIntroAria(stage.title) }),
+    ).toBeInTheDocument()
 
-    for (let session = 0; session < 3; session++) {
-      for (let problem = 0; problem < 10; problem++) {
-        submitNumericAnswer(0)
-        await tickTournament()
-      }
+    fireEvent.click(screen.getByLabelText(TOURNAMENT.championshipStart))
+    expect(screen.getByText(TOURNAMENT.problemLabel(1, 20))).toBeInTheDocument()
+
+    for (let problem = 0; problem < 20; problem++) {
+      submitNumericAnswer(0)
+      await tickTournament()
     }
 
     expect(
       screen.getByLabelText(TOURNAMENT_RESULTS.regionLabel),
     ).toBeInTheDocument()
-    expect(screen.getByLabelText(/ציון כללי:/)).toBeInTheDocument()
-    expect(
-      screen.getByLabelText(TOURNAMENT_RESULTS.sessionsAria(3, 3)),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText(/מקום \d+ מתוך 10/)).toBeInTheDocument()
+    expect(screen.getByText(stage.title)).toBeInTheDocument()
     expect(screen.getByLabelText(TOURNAMENT_RESULTS.mainMenu)).toBeInTheDocument()
   })
 })

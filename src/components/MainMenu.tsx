@@ -1,6 +1,7 @@
 import { Belt } from '../types'
 import { APP_TITLE, APP_SUBTITLE, MENU, beltLabel, BELT_NAMES, PROFILE } from '../i18n/he'
 import { getBeltColor } from '../logic/beltColors'
+import { getChampionshipStageForBelt } from '../logic/championship'
 import './MainMenu.css'
 
 export interface MainMenuProps {
@@ -22,6 +23,7 @@ const BELT_TEXT_COLORS: Record<Belt, string> = {
 export function MainMenu({ onNavigate, currentBelt, currentStripes }: MainMenuProps) {
   const beltValue = currentBelt ?? Belt.White
   const stripes = currentStripes ?? 0
+  const championshipStage = getChampionshipStageForBelt(beltValue)
 
   return (
     <div className="main-menu">
@@ -82,7 +84,9 @@ export function MainMenu({ onNavigate, currentBelt, currentStripes }: MainMenuPr
         >
           <span className="action-card__icon" aria-hidden="true">🏆</span>
           <span className="action-card__label">{MENU.tournament}</span>
-          <span className="action-card__sub">{MENU.tournamentSub}</span>
+          <span className="action-card__sub">
+            {MENU.tournamentSub(championshipStage.shortTitle)}
+          </span>
         </button>
 
         <button

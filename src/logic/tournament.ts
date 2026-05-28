@@ -6,12 +6,13 @@ import type { TournamentState, TournamentResult, TournamentSession } from '../ty
  * @returns A new TournamentState with isActive=true, currentSessionIndex=0,
  *          empty sessions array, and startTime set to current time.
  */
-export function startTournament(): TournamentState {
+export function startTournament(targetSessions = 3): TournamentState {
   return {
     isActive: true,
     currentSessionIndex: 0,
     sessions: [],
     startTime: Date.now(),
+    targetSessions,
   };
 }
 
@@ -29,7 +30,7 @@ export function completeSession(
 ): TournamentState {
   const updatedSessions = [...state.sessions, session];
   const nextIndex = state.currentSessionIndex + 1;
-  const isComplete = updatedSessions.length >= 3;
+  const isComplete = updatedSessions.length >= (state.targetSessions ?? 3);
 
   return {
     ...state,
@@ -87,5 +88,7 @@ export function calculateTournamentResult(state: TournamentState): TournamentRes
     totalScore,
     totalTime,
     sessionsCompleted,
+    totalCorrect,
+    totalProblems,
   };
 }

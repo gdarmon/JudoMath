@@ -36,6 +36,16 @@
   color: var(--c-ink);
 }
 
+.tournament-results__stage {
+  margin: 0;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cream);
+  color: var(--c-sun-deep);
+  font-size: 16px;
+  font-weight: 900;
+}
+
 .tournament-results__score {
   display: flex;
   align-items: center;
@@ -45,6 +55,17 @@
   border-radius: 50%;
   background: linear-gradient(135deg, var(--c-sun), var(--c-coral));
   box-shadow: 0 12px 30px rgba(255, 107, 107, 0.3);
+}
+
+.tournament-results__score--placement {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tournament-results__score-label {
+  font-size: 20px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .tournament-results__score-value {

@@ -119,20 +119,27 @@ Purpose: make promotion feel special.
 The ceremony uses a dialog overlay with animation. The animation is celebratory
 but short, so it does not block repeated practice for too long.
 
-## Tournament Mode
+## National Championship Mode
 
-Purpose: provide a more exciting timed challenge.
+Purpose: provide a more exciting timed challenge that appears to grow with the
+child's belt progress.
 
-Tournament UI emphasizes:
+Championship UI emphasizes:
 
-- Current round.
+- Current championship stage.
 - Current question.
-- Timer.
+- Countdown timer per question.
 - Fast numeric entry.
-- Final score and total time.
+- Final placement from 1st to 10th.
 
-Tournament mode should feel a little more intense than normal play, but still
-safe and encouraging.
+The championship starts with an intro screen so the child understands the stage,
+question count, and time limit before the timer begins. The stage naming follows
+the feeling of a real competition: qualifiers, quarter final, semi final, and
+the national championship final.
+
+The mode should feel more intense than normal play, but still safe and
+encouraging. Timeout should never scold the child; it simply counts the answer
+as missed and moves forward.
 
 ## Accessibility and Usability
 

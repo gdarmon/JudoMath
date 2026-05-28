@@ -31,8 +31,8 @@ export const beltLabel = (belt: Belt) => `חגורה ${BELT_NAMES[belt]}`
 export const MENU = {
   play: 'לשחק',
   playSub: 'פתרו ותקבלו פסים',
-  tournament: 'טורניר',
-  tournamentSub: '3 סבבים נגד השעון',
+  tournament: 'אליפות הארץ',
+  tournamentSub: (stage: string) => `${stage} · סבב מהיר`,
   profile: 'הפרופיל שלי',
   profileSub: 'החגורה והנתונים שלי',
 } as const
@@ -118,9 +118,19 @@ export const TOURNAMENT = {
   sessionLabel: (idx: number, total: number) => `סבב ${idx} מתוך ${total}`,
   problemLabel: (idx: number, total: number) => `שאלה ${idx} מתוך ${total}`,
   timerAria: (s: string) => `זמן שעבר: ${s}`,
+  countdownAria: (s: string) => `זמן שנשאר לשאלה: ${s}`,
   timerSeconds: (n: number) => `${n.toFixed(1)} שנ׳`,
+  countdownSeconds: (n: number) => `${n} שנ׳`,
   back: 'חזרה',
   backAria: 'חזרה לתפריט',
+  championshipBadge: 'אליפות הארץ',
+  championshipIntroAria: (stage: string) => `פתיחת ${stage}`,
+  championshipIntroTitle: (stage: string) => stage,
+  championshipIntroRules: (questions: number, seconds: number) =>
+    `${questions} שאלות, ${seconds} שניות לכל שאלה`,
+  championshipIntroPlacement: 'בסוף מקבלים מקום 1-10 לפי מספר התשובות הנכונות.',
+  championshipStart: 'התחל קרב',
+  stageLabel: (stage: string) => `שלב: ${stage}`,
 } as const
 
 /* Tournament results */
@@ -135,7 +145,16 @@ export const TOURNAMENT_RESULTS = {
   sessionsLabel: 'סבבים',
   sessionsAria: (done: number, total: number) => `${done} מתוך ${total} סבבים הושלמו`,
   sessionsValue: (done: number, total: number) => `${done}/${total}`,
+  stageLabel: 'שלב',
+  correctLabel: 'נכונות',
+  correctValue: (correct: number, total: number) => `${correct}/${total}`,
+  questionsLabel: 'שאלות',
+  placementLabel: 'מקום',
+  placementAria: (place: number) => `מקום ${place} מתוך 10`,
+  placementMessage: (place: number) =>
+    place === 1 ? 'מקום 1! אלוף הארץ!' : `מקום ${place} מתוך 10!`,
   playAgain: 'טורניר נוסף',
+  playChampionshipAgain: 'אליפות נוספת',
   mainMenu: 'תפריט ראשי',
   regionLabel: 'תוצאות הטורניר',
 } as const

@@ -209,6 +209,8 @@ function App() {
           <TournamentScreen
             onComplete={handleTournamentComplete}
             onBack={handleMainMenu}
+            currentBelt={currentBelt}
+            variant="championship"
           />
         )
 

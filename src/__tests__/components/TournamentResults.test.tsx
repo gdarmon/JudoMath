@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { TournamentResults } from '../../components/TournamentResults'
+import { Belt } from '../../types'
 import type { TournamentResult } from '../../types'
 import { TOURNAMENT_RESULTS } from '../../i18n/he'
 
@@ -96,5 +97,32 @@ describe('TournamentResults', () => {
     }
     render(<TournamentResults {...defaultProps} result={slowResult} />)
     expect(screen.getByText('12:00')).toBeInTheDocument()
+  })
+
+  it('displays championship placement and correct count', () => {
+    const championshipResult: TournamentResult = {
+      totalScore: 80,
+      totalTime: 64000,
+      sessionsCompleted: 1,
+      totalCorrect: 16,
+      totalProblems: 20,
+      placement: 3,
+      championshipStage: {
+        id: 'quarterFinal',
+        title: 'רבע גמר אליפות הארץ',
+        shortTitle: 'רבע גמר',
+        description: 'שלב בדיקה',
+        minBelt: Belt.Orange,
+        maxBelt: Belt.Green,
+        questionCount: 20,
+        secondsPerQuestion: 12,
+      },
+    }
+
+    render(<TournamentResults {...defaultProps} result={championshipResult} />)
+    expect(screen.getByText(TOURNAMENT_RESULTS.placementMessage(3))).toBeInTheDocument()
+    expect(screen.getByLabelText(TOURNAMENT_RESULTS.placementAria(3))).toBeInTheDocument()
+    expect(screen.getByText(TOURNAMENT_RESULTS.correctValue(16, 20))).toBeInTheDocument()
+    expect(screen.getByText('רבע גמר אליפות הארץ')).toBeInTheDocument()
   })
 })

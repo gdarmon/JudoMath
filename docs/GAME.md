@@ -93,17 +93,32 @@ The app does not inject ads. YouTube can still control its own playback and ad
 behavior, so browser validation checks embeddability and load errors rather than
 guaranteeing that YouTube will never display promotional content.
 
-## Tournament Mode
+## National Championship
 
-Tournament mode is a faster challenge flow:
+The tournament button opens the player's current national championship stage.
+Stages are unlocked by current belt:
 
-- 3 sessions.
-- 10 questions per session.
-- The app records answer timing per problem.
-- Final result combines all tournament sessions into one score and total time.
+| Belts | Stage | Questions | Time per question |
+| --- | --- | --- | --- |
+| White / Yellow | מוקדמות אליפות הארץ | 20 | 15 seconds |
+| Orange / Green | רבע גמר אליפות הארץ | 20 | 12 seconds |
+| Blue | חצי גמר אליפות הארץ | 20 | 10 seconds |
+| Brown / Black | אליפות הארץ | 20 | 8 seconds |
+
+Each championship event is a single fast timed round. If the child does not
+answer before the timer reaches zero, the question is counted as incorrect and
+the game moves on.
+
+At the end, the child receives a placement from 1st to 10th based on correct
+answers. A perfect round is 1st place; fewer correct answers move the placement
+down by bands until 10th place.
+
+The older 3-round tournament logic still exists for tests and future use, but
+the app's main tournament card currently starts the championship flow.
 
 Tournament logic lives in `src/logic/tournament.ts`; the screen is
-`src/components/TournamentScreen.tsx`.
+`src/components/TournamentScreen.tsx`. Stage selection and placement logic live
+in `src/logic/championship.ts`.
 
 ## Persistence
 

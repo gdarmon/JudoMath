@@ -15,6 +15,20 @@ export const Belt = {
 
 export type Belt = (typeof Belt)[keyof typeof Belt];
 
+// Championship stages unlocked by belt progress
+export type ChampionshipStageId = 'qualifiers' | 'quarterFinal' | 'semiFinal' | 'final';
+
+export interface ChampionshipStage {
+  id: ChampionshipStageId;
+  title: string;
+  shortTitle: string;
+  description: string;
+  minBelt: Belt;
+  maxBelt: Belt;
+  questionCount: number;
+  secondsPerQuestion: number;
+}
+
 // Math problem representation
 export interface MathProblem {
   id: string;
@@ -61,6 +75,7 @@ export interface TournamentState {
   sessions: TournamentSession[];
   startTime: number;
   isActive: boolean;
+  targetSessions?: number;
 }
 
 // Individual tournament session data
@@ -76,6 +91,10 @@ export interface TournamentResult {
   totalScore: number;
   totalTime: number;         // milliseconds
   sessionsCompleted: number;
+  totalCorrect?: number;
+  totalProblems?: number;
+  placement?: number;        // 1-10 for championship events
+  championshipStage?: ChampionshipStage;
 }
 
 // Leaderboard entry

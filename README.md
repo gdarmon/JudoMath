@@ -17,7 +17,8 @@ Live app: https://gdarmon.github.io/JudoMath/
 - Gives gentle feedback on wrong answers and positive streak praise after 3+
   correct answers in a row.
 - Plays a short judo reward clip after each correct answer.
-- Includes a tournament mode: 3 timed rounds of 10 questions.
+- Includes a national championship mode with timed 20-question rounds and
+  placement from 1st to 10th.
 - Saves local progress offline in IndexedDB.
 - Runs on the web, as an installable PWA, and as an Android Trusted Web
   Activity wrapper.

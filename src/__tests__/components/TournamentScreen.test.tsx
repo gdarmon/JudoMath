@@ -2,8 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { Mock } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { TournamentScreen } from '../../components/TournamentScreen'
+import { Belt } from '../../types'
 import type { TournamentResult } from '../../types'
 import { TOURNAMENT } from '../../i18n/he'
+import { getChampionshipStageForBelt } from '../../logic/championship'
 
 describe('TournamentScreen', () => {
   let onComplete: Mock<(result: TournamentResult) => void>
@@ -123,5 +125,73 @@ describe('TournamentScreen', () => {
     expect(progressBar).toBeTruthy()
     expect(progressBar.getAttribute('aria-valuenow')).toBe('1')
     expect(progressBar.getAttribute('aria-valuemax')).toBe('10')
+  })
+
+  it('shows championship intro for championship variant', () => {
+    const stage = getChampionshipStageForBelt(Belt.Blue)
+    render(
+      <TournamentScreen
+        onComplete={onComplete}
+        onBack={onBack}
+        currentBelt={Belt.Blue}
+        variant="championship"
+      />,
+    )
+
+    expect(
+      screen.getByRole('region', { name: TOURNAMENT.championshipIntroAria(stage.title) }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(stage.title)).toBeInTheDocument()
+    expect(screen.getByLabelText(TOURNAMENT.championshipStart)).toBeInTheDocument()
+  })
+
+  it('runs championship as one timed 20-question round with placement result', () => {
+    render(
+      <TournamentScreen
+        onComplete={onComplete}
+        onBack={onBack}
+        currentBelt={Belt.White}
+        variant="championship"
+      />,
+    )
+
+    fireEvent.click(screen.getByLabelText(TOURNAMENT.championshipStart))
+    expect(screen.getByText(TOURNAMENT.problemLabel(1, 20))).toBeTruthy()
+    expect(screen.getByRole('progressbar').getAttribute('aria-valuemax')).toBe('20')
+
+    for (let problem = 0; problem < 20; problem++) {
+      fireEvent.keyDown(window, { key: '5' })
+      fireEvent.keyDown(window, { key: 'Enter' })
+      act(() => {
+        vi.advanceTimersByTime(1100)
+      })
+    }
+
+    expect(onComplete).toHaveBeenCalledOnce()
+    const result = onComplete.mock.calls[0][0]
+    expect(result.sessionsCompleted).toBe(1)
+    expect(result.totalProblems).toBe(20)
+    expect(result.placement).toBeGreaterThanOrEqual(1)
+    expect(result.placement).toBeLessThanOrEqual(10)
+    expect(result.championshipStage?.id).toBe('qualifiers')
+  })
+
+  it('counts timeout as an incorrect championship answer and advances', () => {
+    render(
+      <TournamentScreen
+        onComplete={onComplete}
+        onBack={onBack}
+        currentBelt={Belt.Brown}
+        variant="championship"
+      />,
+    )
+
+    fireEvent.click(screen.getByLabelText(TOURNAMENT.championshipStart))
+
+    act(() => {
+      vi.advanceTimersByTime(9200)
+    })
+
+    expect(screen.getByText(TOURNAMENT.problemLabel(2, 20))).toBeTruthy()
   })
 })

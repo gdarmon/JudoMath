@@ -52,8 +52,8 @@ currently driven by `App.tsx`.
 | `AnswerChoices` | Six-choice answer grid for normal practice. |
 | `RewardClip` | Full-screen reward video modal. |
 | `SessionResults` | End-of-session score, stripe, and promotion messaging. |
-| `TournamentScreen` | Timed 3-round challenge flow. |
-| `TournamentResults` | Tournament score and time summary. |
+| `TournamentScreen` | Classic tournament flow or belt-based championship flow. |
+| `TournamentResults` | Tournament/championship score, time, and placement summary. |
 | `PlayerProfile` | Belt, stripes, and lifetime stats. |
 | `BeltCeremony` | Promotion celebration overlay. |
 | `NumberInput` | Numeric keypad used by tournament mode. |
@@ -67,6 +67,7 @@ currently driven by `App.tsx`.
 | `scoring.ts` | Convert correct/total counts into a percentage. |
 | `beltProgression.ts` | Apply 75% stripe rule and 3-stripe belt promotion. |
 | `tournament.ts` | Start tournaments, complete rounds, and compute final results. |
+| `championship.ts` | Map belts to national championship stages and calculate placement. |
 | `clipRotation.ts` | Pick reward clips without repeats during a full rotation. |
 | `beltColors.ts` | Map belt enum values to visual colors. |
 | `responsive.ts` | Helpers for responsive behavior tests. |
@@ -87,6 +88,8 @@ rendering React.
 - `TournamentState`
 - `TournamentSession`
 - `TournamentResult`
+- `ChampionshipStage`
+- `ChampionshipStageId`
 - `LeaderboardEntry`
 - `AnimationConfig`
 - `GameStore`
@@ -145,6 +148,24 @@ Run all unit tests:
 ```bash
 npm run test
 ```
+
+## Championship Flow
+
+The visible tournament card in `MainMenu` starts `TournamentScreen` with
+`variant="championship"`. The screen derives the active stage from the current
+belt:
+
+- White / Yellow: qualifiers.
+- Orange / Green: quarter final.
+- Blue: semi final.
+- Brown / Black: final.
+
+Championship mode uses one timed 20-question session. Every question has its own
+countdown; timeout records a wrong answer and advances. Results include
+`totalCorrect`, `totalProblems`, `placement`, and `championshipStage`.
+
+The older 3-session tournament behavior remains available by rendering
+`TournamentScreen` with the default `variant="classic"`.
 
 ## Web Deployment
 
