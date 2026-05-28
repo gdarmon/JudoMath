@@ -1,73 +1,115 @@
-# React + TypeScript + Vite
+# Judo Math
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Judo Math is a Hebrew, mobile-first math practice game for young children. It
+uses short arithmetic sessions, judo belt progression, streak praise, and short
+YouTube reward clips to keep practice feeling like play.
 
-Currently, two official plugins are available:
+Live app: https://gdarmon.github.io/JudoMath/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What the Game Does
 
-## React Compiler
+- Practices first-grade arithmetic with addition and subtraction up to 20.
+- Shows 10 questions per normal session.
+- Uses 6 answer choices so the child must think, but still has a low-friction
+  touch experience.
+- Awards a stripe when a session score is at least 75%.
+- Promotes to the next judo belt after 3 earned stripes.
+- Gives gentle feedback on wrong answers and positive streak praise after 3+
+  correct answers in a row.
+- Plays a short judo reward clip after each correct answer.
+- Includes a tournament mode: 3 timed rounds of 10 questions.
+- Saves local progress offline in IndexedDB.
+- Runs on the web, as an installable PWA, and as an Android Trusted Web
+  Activity wrapper.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Documentation
 
-## Expanding the ESLint configuration
+- [Game Rules](docs/GAME.md) - gameplay, progression, rewards, and tournaments.
+- [Code Architecture](docs/CODE.md) - how the React app, logic modules,
+  persistence, clips, and tests are organized.
+- [Design](docs/DESIGN.md) - UX principles, screen structure, visual language,
+  Hebrew/RTL behavior, and accessibility notes.
+- [Android](docs/ANDROID.md) - APK/AAB and Trusted Web Activity release notes.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Quick Start
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Requirements:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node 20+
+- npm
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Install and run locally:
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Run the test suite:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run test
 ```
+
+Build production assets:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Useful Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server. |
+| `npm run build` | Type-check and build the production PWA. |
+| `npm run preview` | Serve the built app locally. |
+| `npm run test` | Run Vitest tests once. |
+| `npm run test:watch` | Run Vitest in watch mode. |
+| `npm run test:e2e` | Run Playwright tests. |
+| `npm run clips:fetch` | Refresh the curated judo clip list from configured sources. |
+| `npm run clips:validate` | Validate clip IDs through YouTube metadata checks. |
+| `npm run clips:check-browser` | Validate reward embeds in a real browser context. |
+| `npm run twa:icons` | Generate PNG icons for PWA/TWA builds. |
+| `npm run twa:init` | Initialize Bubblewrap from the deployed web manifest. |
+| `npm run twa:build` | Build Android TWA APK/AAB artifacts locally. |
+
+## Project Map
+
+| Path | Purpose |
+| --- | --- |
+| `src/App.tsx` | Top-level screen routing and progress save/load wiring. |
+| `src/components/` | UI screens and reusable game components. |
+| `src/logic/` | Pure game logic: problem generation, scoring, belts, clips, tournaments. |
+| `src/persistence/` | IndexedDB offline cache and optional Firebase service code. |
+| `src/data/judoClips.ts` | Curated reward clip pool. |
+| `src/i18n/he.ts` | Hebrew UI strings and encouragement text. |
+| `src/styles/` | Shared design tokens, responsive rules, and accessibility CSS. |
+| `scripts/` | Clip tools, icon generation, and release helpers. |
+| `docs/` | Product, code, design, and Android documentation. |
+
+## Deployment
+
+The production web app is deployed by GitHub Actions on every push to `main`.
+The workflow installs dependencies, runs tests, generates icons, builds the app,
+and deploys `dist/` to GitHub Pages.
+
+Android builds are handled separately through the TWA workflow and Bubblewrap.
+See [docs/ANDROID.md](docs/ANDROID.md) for signing, APK, AAB, and Play Store
+details.
+
+## Notes for Future Changes
+
+- Keep all user-facing Hebrew text in `src/i18n/he.ts`.
+- Keep math behavior in pure logic modules where possible, then cover it with
+  tests before changing UI.
+- Reward clips should be refreshed through the scripts and verified in the
+  browser before release.
+- If Firebase sync is enabled later, document the setup and update
+  [docs/CODE.md](docs/CODE.md) to describe the active data flow.
