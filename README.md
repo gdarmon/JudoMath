@@ -14,6 +14,8 @@ Live app: https://gdarmon.github.io/JudoMath/
   touch experience.
 - Awards a stripe when a session score is at least 75%.
 - Promotes to the next judo belt after 3 earned stripes.
+- Unlocks visual suit skins as the child advances: black after 3 belt
+  promotions and blue after another 3.
 - Gives gentle feedback on wrong answers and positive streak praise after 3+
   correct answers in a row.
 - Plays a short judo reward clip after each correct answer.
@@ -110,6 +112,8 @@ details.
 - Keep all user-facing Hebrew text in `src/i18n/he.ts`.
 - Keep math behavior in pure logic modules where possible, then cover it with
   tests before changing UI.
+- Keep unlockable suit skins in `src/logic/skins.ts`; use the shared avatar
+  component so the selected skin stays consistent.
 - Reward clips should be refreshed through the scripts and verified in the
   browser before release.
 - If Firebase sync is enabled later, document the setup and update

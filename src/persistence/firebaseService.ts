@@ -47,6 +47,7 @@ function progressToDocument(progress: PlayerProgress): DocumentData {
     totalSessions: progress.totalSessions,
     totalCorrect: progress.totalCorrect,
     totalProblems: progress.totalProblems,
+    selectedSkin: progress.selectedSkin,
     updatedAt: serverTimestamp(),
   };
 }
@@ -61,6 +62,7 @@ function documentToProgress(data: DocumentData): PlayerProgress {
     totalSessions: data.totalSessions,
     totalCorrect: data.totalCorrect,
     totalProblems: data.totalProblems,
+    selectedSkin: data.selectedSkin,
   };
 }
 

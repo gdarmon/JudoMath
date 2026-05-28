@@ -15,6 +15,22 @@ export const Belt = {
 
 export type Belt = (typeof Belt)[keyof typeof Belt];
 
+// Visual skins earned through belt progress
+export type JudoSkinId = 'white' | 'black' | 'blue';
+
+export interface JudoSkin {
+  id: JudoSkinId;
+  name: string;
+  description: string;
+  unlockBelt: Belt;
+  giColor: string;
+  giAccent: string;
+  themeAccent: string;
+  themeAccentDeep: string;
+  themeSurface: string;
+  themeSurfaceSoft: string;
+}
+
 // Championship stages unlocked by belt progress
 export type ChampionshipStageId = 'qualifiers' | 'quarterFinal' | 'semiFinal' | 'final';
 
@@ -52,6 +68,7 @@ export interface PlayerProgress {
   totalSessions: number;
   totalCorrect: number;
   totalProblems: number;
+  selectedSkin?: JudoSkinId;
 }
 
 // Result of a single game session

@@ -2,7 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { MainMenu } from '../../components/MainMenu'
 import { Belt } from '../../types'
-import { APP_TITLE, MENU, beltLabel, BELT_NAMES } from '../../i18n/he'
+import { APP_TITLE, MENU, PROFILE, beltLabel } from '../../i18n/he'
+import { getSkinById } from '../../logic/skins'
 
 describe('MainMenu', () => {
   it('renders the Hebrew app title', () => {
@@ -60,7 +61,8 @@ describe('MainMenu', () => {
 
   it('has accessible avatar label with belt info', () => {
     render(<MainMenu onNavigate={vi.fn()} currentBelt={Belt.Orange} />)
-    // Avatar is labelled with the i18n avatar text.
-    expect(screen.getByLabelText(`אווטאר עם חגורה ${BELT_NAMES[Belt.Orange]}`)).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(PROFILE.avatarAria(Belt.Orange, getSkinById('white').name)),
+    ).toBeInTheDocument()
   })
 })

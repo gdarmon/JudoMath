@@ -28,7 +28,7 @@ confidence with arithmetic. That means:
 
 The game uses a soft judo/dojo theme:
 
-- A centered child-friendly hero avatar.
+- A centered child-friendly hero avatar wearing the selected judo suit skin.
 - Belt colors as the primary progression signal.
 - Warm highlights for actions and celebrations.
 - Large math typography.
@@ -36,6 +36,23 @@ The game uses a soft judo/dojo theme:
 - Full-screen focus during sessions.
 
 Shared design tokens live in `src/styles/variables.css`.
+
+## Suit Skins
+
+Suit skins are meant to feel like visible status rewards, not just settings.
+The child can unlock:
+
+- White suit from the start.
+- Black suit after 3 belt promotions.
+- Blue suit after another 3 belt promotions.
+
+When a skin is selected, two things change:
+
+- The main avatar wears the selected suit color.
+- The app accent color and soft background shift toward the selected skin.
+
+Locked skins remain visible in the profile screen with an unlock hint. This
+gives the child a future goal without interrupting practice.
 
 ## Hebrew and Math Direction
 

@@ -1,4 +1,5 @@
 import { Belt } from '../types'
+import type { JudoSkin } from '../types'
 import { RESULTS, BELT_NAMES } from '../i18n/he'
 import { getBeltColor } from '../logic/beltColors'
 import './SessionResults.css'
@@ -10,6 +11,7 @@ export interface SessionResultsProps {
   stripeAwarded: boolean
   beltPromotion: boolean
   newBelt?: Belt
+  newSkinUnlocked?: JudoSkin | null
   onPlayAgain: () => void
   onMainMenu: () => void
 }
@@ -45,6 +47,7 @@ export function SessionResults({
   stripeAwarded,
   beltPromotion,
   newBelt,
+  newSkinUnlocked,
   onPlayAgain,
   onMainMenu,
 }: SessionResultsProps) {
@@ -103,6 +106,24 @@ export function SessionResults({
             >
               {BELT_NAMES[newBelt]}
             </span>
+          </span>
+        </div>
+      )}
+
+      {newSkinUnlocked && (
+        <div
+          className="session-results__skin-unlock"
+          role="status"
+          aria-label={RESULTS.skinUnlockedAria(newSkinUnlocked.name)}
+          style={{
+            ['--unlocked-skin-color' as never]: newSkinUnlocked.giColor,
+            ['--unlocked-skin-accent' as never]: newSkinUnlocked.themeAccent,
+          }}
+        >
+          <span className="session-results__skin-swatch" aria-hidden="true" />
+          <span className="session-results__skin-text">
+            {RESULTS.skinUnlocked}
+            <strong>{newSkinUnlocked.name}</strong>
           </span>
         </div>
       )}

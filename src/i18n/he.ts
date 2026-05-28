@@ -89,6 +89,8 @@ export const RESULTS = {
   beltPromotion: 'חגורה חדשה!',
   beltPromotionAria: (belt: Belt) => `קודמת לחגורה ${BELT_NAMES[belt]}`,
   newBeltLabel: 'חגורה חדשה: ',
+  skinUnlocked: 'סקין חדש נפתח!',
+  skinUnlockedAria: (skin: string) => `סקין חדש נפתח: ${skin}`,
   playAgain: 'משחק נוסף',
   mainMenu: 'תפריט ראשי',
   regionLabel: 'תוצאות הסבב',
@@ -168,8 +170,19 @@ export const PROFILE = {
   statsTitle: 'הסטטיסטיקה שלי',
   sessionsPlayed: 'סבבים ששיחקת',
   correctRate: 'אחוז הצלחה',
+  skinsTitle: 'סקינים',
+  skinsIntro: 'בחר חליפה שכבר פתחת',
+  skinSelected: 'נבחר',
+  skinLocked: 'נעול',
+  skinUnlockedAt: (belt: Belt) => `נפתח בחגורה ${BELT_NAMES[belt]}`,
+  skinSelectAria: (name: string) => `בחר סקין ${name}`,
+  skinLockedAria: (name: string, belt: Belt) =>
+    `${name} נעול עד חגורה ${BELT_NAMES[belt]}`,
   back: 'חזרה לתפריט',
-  avatarAria: (belt: Belt) => `אווטאר עם חגורה ${BELT_NAMES[belt]}`,
+  avatarAria: (belt: Belt, skin?: string) =>
+    skin
+      ? `אווטאר עם חגורה ${BELT_NAMES[belt]} ו${skin}`
+      : `אווטאר עם חגורה ${BELT_NAMES[belt]}`,
 } as const
 
 /* Leaderboard (kept simple — feature still exists) */

@@ -1,13 +1,17 @@
 import { Belt } from '../types'
+import type { JudoSkin } from '../types'
 import { APP_TITLE, APP_SUBTITLE, MENU, beltLabel, BELT_NAMES, PROFILE } from '../i18n/he'
 import { getBeltColor } from '../logic/beltColors'
 import { getChampionshipStageForBelt } from '../logic/championship'
+import { getSkinById } from '../logic/skins'
+import { JudoAvatar } from './JudoAvatar'
 import './MainMenu.css'
 
 export interface MainMenuProps {
   onNavigate: (screen: 'game' | 'tournament' | 'profile') => void
   currentBelt?: Belt
   currentStripes?: number
+  selectedSkin?: JudoSkin
 }
 
 const BELT_TEXT_COLORS: Record<Belt, string> = {
@@ -20,10 +24,11 @@ const BELT_TEXT_COLORS: Record<Belt, string> = {
   [Belt.Black]: '#ffffff',
 }
 
-export function MainMenu({ onNavigate, currentBelt, currentStripes }: MainMenuProps) {
+export function MainMenu({ onNavigate, currentBelt, currentStripes, selectedSkin }: MainMenuProps) {
   const beltValue = currentBelt ?? Belt.White
   const stripes = currentStripes ?? 0
   const championshipStage = getChampionshipStageForBelt(beltValue)
+  const avatarSkin = selectedSkin ?? getSkinById('white')
 
   return (
     <div className="main-menu">
@@ -32,10 +37,11 @@ export function MainMenu({ onNavigate, currentBelt, currentStripes }: MainMenuPr
 
       {/* Hero */}
       <header className="main-menu__hero">
-        <div className="main-menu__avatar" aria-label={PROFILE.avatarAria(beltValue)}>
-          <span className="main-menu__avatar-glow" aria-hidden="true" />
-          <span className="main-menu__avatar-icon" role="img" aria-hidden="true">🥋</span>
-        </div>
+        <JudoAvatar
+          skin={avatarSkin}
+          label={PROFILE.avatarAria(beltValue, avatarSkin.name)}
+          className="main-menu__avatar-figure"
+        />
 
         <h1 className="main-menu__title">{APP_TITLE}</h1>
         <p className="main-menu__tagline">{APP_SUBTITLE}</p>

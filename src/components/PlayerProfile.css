@@ -52,6 +52,11 @@
   animation: profile-bounce 3.5s ease-in-out infinite;
 }
 
+.player-profile__avatar-figure {
+  width: 144px;
+  height: 144px;
+}
+
 @keyframes profile-bounce {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-6px); }
@@ -115,6 +120,84 @@
 
 .player-profile__stripes-remaining {
   color: var(--c-coral-deep);
+  font-weight: 700;
+}
+
+/* Skin selector */
+.player-profile__skins-intro {
+  margin: -4px 0 2px;
+  color: var(--c-text-soft);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.player-profile__skins-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.player-profile__skin-card {
+  --skin-card-color: #f8f4e9;
+  --skin-card-accent: #4ecdc4;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 2px 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 3px solid var(--c-line);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  color: var(--c-ink);
+  text-align: start;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.player-profile__skin-card.is-selected {
+  border-color: var(--skin-card-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--skin-card-accent), transparent 78%);
+}
+
+.player-profile__skin-card.is-unlocked:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.player-profile__skin-card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-sm);
+}
+
+.player-profile__skin-card.is-locked {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.player-profile__skin-swatch {
+  grid-row: 1 / 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 3px solid color-mix(in srgb, var(--skin-card-accent), #ffffff 45%);
+  background:
+    linear-gradient(135deg, transparent 44%, rgba(255, 255, 255, 0.65) 45% 55%, transparent 56%),
+    var(--skin-card-color);
+  box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.08);
+}
+
+.player-profile__skin-name {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.player-profile__skin-state {
+  color: var(--c-text-soft);
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -183,7 +266,11 @@
 }
 
 @media (max-width: 767px) {
-  .player-profile__avatar { width: 124px; height: 124px; }
+  .player-profile__avatar,
+  .player-profile__avatar-figure {
+    width: 124px;
+    height: 124px;
+  }
   .player-profile__avatar-icon { font-size: 70px; }
   .player-profile__belt-badge { font-size: 15px; padding: 6px 18px; }
   .player-profile__stripe { width: 36px; height: 10px; }

@@ -12,6 +12,7 @@ flowchart TD
   Screens --> Text["Hebrew strings in src/i18n/he.ts"]
   App --> Store["Zustand store"]
   App --> Cache["IndexedDB offline cache"]
+  App --> Skins["Skin theme variables"]
   Screens --> Clips["Reward clips + rotation"]
   Clips --> YouTube["youtube-nocookie embeds"]
   Build["Vite + vite-plugin-pwa"] --> Pages["GitHub Pages"]
@@ -47,6 +48,7 @@ currently driven by `App.tsx`.
 | Component | Purpose |
 | --- | --- |
 | `MainMenu` | Landing screen with belt badge and main actions. |
+| `JudoAvatar` | Shared animated avatar that wears the selected suit skin. |
 | `GameSession` | Normal 10-question practice session. |
 | `ProblemDisplay` | Large math problem, feedback, and correct-answer reveal. |
 | `AnswerChoices` | Six-choice answer grid for normal practice. |
@@ -66,6 +68,7 @@ currently driven by `App.tsx`.
 | `distractors.ts` | Build deterministic six-choice answer sets. |
 | `scoring.ts` | Convert correct/total counts into a percentage. |
 | `beltProgression.ts` | Apply 75% stripe rule and 3-stripe belt promotion. |
+| `skins.ts` | Define unlockable suit skins, unlock rules, and selected-skin normalization. |
 | `tournament.ts` | Start tournaments, complete rounds, and compute final results. |
 | `championship.ts` | Map belts to national championship stages and calculate placement. |
 | `clipRotation.ts` | Pick reward clips without repeats during a full rotation. |
@@ -83,6 +86,8 @@ rendering React.
 - `MathProblem`
 - `ProblemGeneratorConfig`
 - `PlayerProgress`
+- `JudoSkin`
+- `JudoSkinId`
 - `SessionResult`
 - `ProgressionResult`
 - `TournamentState`
@@ -103,7 +108,8 @@ The active persistence path is local-only:
 
 1. `App.tsx` initializes `offlineCache`.
 2. It loads `local-player` progress from IndexedDB.
-3. Store changes are auto-saved back to IndexedDB.
+3. It normalizes old saves that do not yet include `selectedSkin`.
+4. Store changes are auto-saved back to IndexedDB.
 
 `src/persistence/firebaseService.ts` and `firebaseConfig.ts` exist for optional
 future sync/leaderboard work, but Firebase is not wired into the default runtime
@@ -166,6 +172,21 @@ countdown; timeout records a wrong answer and advances. Results include
 
 The older 3-session tournament behavior remains available by rendering
 `TournamentScreen` with the default `variant="classic"`.
+
+## Skin Flow
+
+`src/logic/skins.ts` defines all suit skins and unlock thresholds:
+
+- White suit: available from the start.
+- Black suit: available from Green belt, after 3 belt promotions.
+- Blue suit: available from Black belt, after another 3 belt promotions.
+
+`App.tsx` derives the active skin from `PlayerProgress.selectedSkin`, falls back
+to white when needed, and writes CSS variables on `.app-shell`. Components use
+those variables for the app accent color and pass the skin into `JudoAvatar`.
+
+The skin selector lives on `PlayerProfile`. Locked skins are visible but
+disabled, so the child can see what is coming next.
 
 ## Web Deployment
 

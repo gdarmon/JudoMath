@@ -2,11 +2,14 @@ import type { PlayerProgress } from '../types'
 import { Belt } from '../types'
 import { PROFILE, BELT_NAMES, beltLabel } from '../i18n/he'
 import { getBeltColor } from '../logic/beltColors'
+import { getSelectedSkinId, getSkinById, JUDO_SKINS } from '../logic/skins'
+import { JudoAvatar } from './JudoAvatar'
 import './PlayerProfile.css'
 
 export interface PlayerProfileProps {
   player: PlayerProgress
   onBack: () => void
+  onSkinSelect?: (skinId: PlayerProgress['selectedSkin']) => void
 }
 
 const BELT_TEXT_COLORS: Record<Belt, string> = {
@@ -21,8 +24,10 @@ const BELT_TEXT_COLORS: Record<Belt, string> = {
 
 const STRIPES_FOR_PROMOTION = 3
 
-export function PlayerProfile({ player, onBack }: PlayerProfileProps) {
+export function PlayerProfile({ player, onBack, onSkinSelect }: PlayerProfileProps) {
   const stripesRemaining = STRIPES_FOR_PROMOTION - player.currentStripes
+  const selectedSkinId = getSelectedSkinId(player)
+  const selectedSkin = getSkinById(selectedSkinId)
   const overallPercentage =
     player.totalProblems > 0
       ? Math.round((player.totalCorrect / player.totalProblems) * 100)
@@ -32,10 +37,11 @@ export function PlayerProfile({ player, onBack }: PlayerProfileProps) {
     <div className="player-profile">
       {/* Avatar + belt */}
       <section className="player-profile__avatar-section">
-        <div className="player-profile__avatar" aria-label={PROFILE.avatarAria(player.currentBelt)}>
-          <span className="player-profile__avatar-glow" aria-hidden="true" />
-          <span className="player-profile__avatar-icon" role="img" aria-hidden="true">🥋</span>
-        </div>
+        <JudoAvatar
+          skin={selectedSkin}
+          label={PROFILE.avatarAria(player.currentBelt, selectedSkin.name)}
+          className="player-profile__avatar-figure"
+        />
 
         <span
           className="player-profile__belt-badge"
@@ -46,6 +52,48 @@ export function PlayerProfile({ player, onBack }: PlayerProfileProps) {
         >
           {beltLabel(player.currentBelt)}
         </span>
+      </section>
+
+      {/* Skin selector */}
+      <section className="player-profile__card">
+        <h2 className="player-profile__card-title">{PROFILE.skinsTitle}</h2>
+        <p className="player-profile__skins-intro">{PROFILE.skinsIntro}</p>
+
+        <div className="player-profile__skins-grid">
+          {JUDO_SKINS.map((skin) => {
+            const unlocked = player.currentBelt >= skin.unlockBelt
+            const selected = selectedSkinId === skin.id
+
+            return (
+              <button
+                key={skin.id}
+                type="button"
+                className={`player-profile__skin-card ${
+                  selected ? 'is-selected' : ''
+                } ${unlocked ? 'is-unlocked' : 'is-locked'}`}
+                onClick={() => unlocked && onSkinSelect?.(skin.id)}
+                disabled={!unlocked}
+                aria-label={
+                  unlocked
+                    ? PROFILE.skinSelectAria(skin.name)
+                    : PROFILE.skinLockedAria(skin.name, skin.unlockBelt)
+                }
+                style={{
+                  ['--skin-card-color' as never]: skin.giColor,
+                  ['--skin-card-accent' as never]: skin.themeAccent,
+                }}
+              >
+                <span className="player-profile__skin-swatch" aria-hidden="true" />
+                <span className="player-profile__skin-name">{skin.name}</span>
+                <span className="player-profile__skin-state">
+                  {unlocked
+                    ? selected ? PROFILE.skinSelected : skin.description
+                    : PROFILE.skinUnlockedAt(skin.unlockBelt)}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </section>
 
       {/* Stripe progress card */}

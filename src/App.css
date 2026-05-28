@@ -4,6 +4,15 @@
   display: flex;
   flex-direction: column;
   background: var(--surface-soft);
+  --c-mint: var(--skin-accent, #4ecdc4);
+  --c-mint-deep: var(--skin-accent-deep, #26a69a);
+  --c-sky: var(--skin-accent, #5b9bd5);
+  --c-sky-deep: var(--skin-accent-deep, #3a7bd5);
+  --surface: var(--skin-surface, #ffffff);
+  --surface-soft: var(--skin-surface-soft, #fff8ee);
+  --focus-ring: 0 0 0 4px color-mix(in srgb, var(--skin-accent, #ffc233), transparent 35%);
+  color: var(--c-text);
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 .app-content {

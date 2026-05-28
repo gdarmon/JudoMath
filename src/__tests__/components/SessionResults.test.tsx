@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { SessionResults } from '../../components/SessionResults'
 import { Belt } from '../../types'
 import { RESULTS, BELT_NAMES } from '../../i18n/he'
+import { getSkinById } from '../../logic/skins'
 
 describe('SessionResults', () => {
   const defaultProps = {
@@ -69,6 +70,16 @@ describe('SessionResults', () => {
   it('does not show belt promotion when beltPromotion is false', () => {
     render(<SessionResults {...defaultProps} beltPromotion={false} />)
     expect(screen.queryByRole('status', { name: /קודמת/ })).not.toBeInTheDocument()
+  })
+
+  it('shows a newly unlocked skin reward', () => {
+    const skin = getSkinById('black')
+    render(<SessionResults {...defaultProps} newSkinUnlocked={skin} />)
+    expect(screen.getByText(RESULTS.skinUnlocked)).toBeInTheDocument()
+    expect(screen.getByText(skin.name)).toBeInTheDocument()
+    expect(
+      screen.getByRole('status', { name: RESULTS.skinUnlockedAria(skin.name) }),
+    ).toBeInTheDocument()
   })
 
   it('renders Play Again button and calls onPlayAgain when clicked', () => {

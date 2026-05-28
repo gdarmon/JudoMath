@@ -11,8 +11,15 @@ import { useGameStore } from './store/gameStore'
 import { offlineCache } from './persistence/offlineCache'
 import { calculateScore } from './logic/scoring'
 import { evaluateProgression } from './logic/beltProgression'
+import {
+  DEFAULT_SKIN_ID,
+  getSelectedSkinId,
+  getSkinById,
+  getSkinUnlockedAtBelt,
+  normalizePlayerSkin,
+} from './logic/skins'
 import { Belt } from './types'
-import type { PlayerProgress, ProgressionResult, TournamentResult } from './types'
+import type { JudoSkin, PlayerProgress, ProgressionResult, TournamentResult } from './types'
 
 /** Default player progress for new players */
 const DEFAULT_PLAYER: PlayerProgress = {
@@ -21,6 +28,7 @@ const DEFAULT_PLAYER: PlayerProgress = {
   totalSessions: 0,
   totalCorrect: 0,
   totalProblems: 0,
+  selectedSkin: DEFAULT_SKIN_ID,
 }
 
 /** Default player ID for local-only mode */
@@ -37,6 +45,7 @@ function App() {
   const [screen, setScreen] = useState<AppScreen>('menu')
   const [sessionResult, setSessionResult] = useState<ProgressionResult | null>(null)
   const [lastSessionScore, setLastSessionScore] = useState<{ correct: number; total: number; score: number } | null>(null)
+  const [lastUnlockedSkin, setLastUnlockedSkin] = useState<JudoSkin | null>(null)
   const [tournamentResult, setTournamentResult] = useState<TournamentResult | null>(null)
   const [showBeltCeremony, setShowBeltCeremony] = useState(false)
   const [ceremonyBelt, setCeremonyBelt] = useState<Belt>(Belt.White)
@@ -56,7 +65,7 @@ function App() {
         const savedProgress = await offlineCache.loadProgress(LOCAL_PLAYER_ID)
         if (mounted) {
           if (savedProgress) {
-            setPlayer(savedProgress)
+            setPlayer(normalizePlayerSkin(savedProgress))
           } else {
             setPlayer(DEFAULT_PLAYER)
           }
@@ -124,11 +133,16 @@ function App() {
     })
 
     // Update player in store
-    setPlayer(progression.newProgress)
+    setPlayer(normalizePlayerSkin(progression.newProgress))
 
     // Store results for display
     setSessionResult(progression)
     setLastSessionScore({ correct: correctCount, total: totalCount, score })
+    setLastUnlockedSkin(
+      progression.beltPromotion && progression.newBelt !== undefined
+        ? getSkinUnlockedAtBelt(progression.newBelt) ?? null
+        : null,
+    )
 
     // Show results screen
     setScreen('sessionResults')
@@ -151,6 +165,7 @@ function App() {
     setScreen('game')
     setSessionResult(null)
     setLastSessionScore(null)
+    setLastUnlockedSkin(null)
   }
 
   // Handle "Main Menu" navigation
@@ -158,6 +173,7 @@ function App() {
     setScreen('menu')
     setSessionResult(null)
     setLastSessionScore(null)
+    setLastUnlockedSkin(null)
     setTournamentResult(null)
   }
 
@@ -168,6 +184,16 @@ function App() {
 
   const currentBelt = player?.currentBelt ?? Belt.White
   const currentStripes = player?.currentStripes ?? 0
+  const selectedSkinId = player ? getSelectedSkinId(player) : DEFAULT_SKIN_ID
+  const selectedSkin = getSkinById(selectedSkinId)
+
+  const handleSkinSelect = (skinId: PlayerProgress['selectedSkin']) => {
+    if (!player || !skinId) return
+    setPlayer({
+      ...player,
+      selectedSkin: skinId,
+    })
+  }
 
   const renderScreen = () => {
     switch (screen) {
@@ -177,6 +203,7 @@ function App() {
             onNavigate={handleMenuNavigate}
             currentBelt={currentBelt}
             currentStripes={currentStripes}
+            selectedSkin={selectedSkin}
           />
         )
 
@@ -199,6 +226,7 @@ function App() {
             stripeAwarded={sessionResult?.stripeAwarded ?? false}
             beltPromotion={sessionResult?.beltPromotion ?? false}
             newBelt={sessionResult?.newBelt}
+            newSkinUnlocked={lastUnlockedSkin}
             onPlayAgain={handlePlayAgain}
             onMainMenu={handleMainMenu}
           />
@@ -228,13 +256,24 @@ function App() {
           <PlayerProfile
             player={player ?? DEFAULT_PLAYER}
             onBack={handleMainMenu}
+            onSkinSelect={handleSkinSelect}
           />
         )
     }
   }
 
   return (
-    <div className="app-shell">
+    <div
+      className={`app-shell app-shell--skin-${selectedSkin.id}`}
+      style={{
+        ['--skin-accent' as never]: selectedSkin.themeAccent,
+        ['--skin-accent-deep' as never]: selectedSkin.themeAccentDeep,
+        ['--skin-surface' as never]: selectedSkin.themeSurface,
+        ['--skin-surface-soft' as never]: selectedSkin.themeSurfaceSoft,
+        ['--skin-gi' as never]: selectedSkin.giColor,
+        ['--skin-gi-accent' as never]: selectedSkin.giAccent,
+      }}
+    >
       <main className="app-content">
         {renderScreen()}
       </main>

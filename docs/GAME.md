@@ -63,6 +63,25 @@ Progression rules:
 
 The implementation lives in `src/logic/beltProgression.ts`.
 
+## Suit Skins
+
+The child starts with a white judo suit skin. More suit colors unlock through
+belt progress:
+
+| Unlock point | Skin |
+| --- | --- |
+| Start | חליפה לבנה |
+| After 3 belt promotions, at Green belt | חליפה שחורה |
+| After another 3 belt promotions, at Black belt | חליפה כחולה |
+
+The chosen skin is saved with player progress. When a skin is selected, the main
+avatar wears that suit and the app's primary accent colors shift to match the
+chosen style. If old saved progress does not contain a selected skin, the game
+automatically uses the white suit.
+
+Skin rules live in `src/logic/skins.ts`; the selector is in
+`src/components/PlayerProfile.tsx`.
+
 ## Encouragement
 
 The app uses short Hebrew phrases designed to feel warm and kid-friendly.
