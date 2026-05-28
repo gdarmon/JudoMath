@@ -15,7 +15,7 @@ Live app: https://gdarmon.github.io/JudoMath/
 - Awards a stripe when a session score is at least 75%.
 - Promotes to the next judo belt after 3 earned stripes.
 - Unlocks visual suit skins as the child advances: black after 3 belt
-  promotions and blue after another 3.
+  promotions and blue after another 3, using 3D judoka avatar art.
 - Gives gentle feedback on wrong answers and positive streak praise after 3+
   correct answers in a row.
 - Plays a short judo reward clip after each correct answer.
@@ -89,6 +89,7 @@ npm run preview
 | --- | --- |
 | `src/App.tsx` | Top-level screen routing and progress save/load wiring. |
 | `src/components/` | UI screens and reusable game components. |
+| `src/assets/avatars/` | Transparent 3D judoka avatar images for unlockable suit skins. |
 | `src/logic/` | Pure game logic: problem generation, scoring, belts, clips, tournaments. |
 | `src/persistence/` | IndexedDB offline cache and optional Firebase service code. |
 | `src/data/judoClips.ts` | Curated reward clip pool. |
@@ -113,7 +114,7 @@ details.
 - Keep math behavior in pure logic modules where possible, then cover it with
   tests before changing UI.
 - Keep unlockable suit skins in `src/logic/skins.ts`; use the shared avatar
-  component so the selected skin stays consistent.
+  component and `src/assets/avatars/` images so the selected skin stays consistent.
 - Reward clips should be refreshed through the scripts and verified in the
   browser before release.
 - If Firebase sync is enabled later, document the setup and update

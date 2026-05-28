@@ -1,5 +1,8 @@
 import { Belt } from '../types'
 import type { JudoSkin, JudoSkinId, PlayerProgress } from '../types'
+import judokaBlackAvatar from '../assets/avatars/judoka-black.png'
+import judokaBlueAvatar from '../assets/avatars/judoka-blue.png'
+import judokaWhiteAvatar from '../assets/avatars/judoka-white.png'
 
 export const DEFAULT_SKIN_ID: JudoSkinId = 'white'
 
@@ -9,6 +12,7 @@ export const JUDO_SKINS: JudoSkin[] = [
     name: 'חליפה לבנה',
     description: 'הסקין הקלאסי שמתחילים איתו.',
     unlockBelt: Belt.White,
+    avatarSrc: judokaWhiteAvatar,
     giColor: '#f8f4e9',
     giAccent: '#d8d0bf',
     themeAccent: '#4ecdc4',
@@ -21,6 +25,7 @@ export const JUDO_SKINS: JudoSkin[] = [
     name: 'חליפה שחורה',
     description: 'נפתח אחרי 3 חגורות.',
     unlockBelt: Belt.Green,
+    avatarSrc: judokaBlackAvatar,
     giColor: '#23232b',
     giAccent: '#5f6370',
     themeAccent: '#2d2a33',
@@ -33,6 +38,7 @@ export const JUDO_SKINS: JudoSkin[] = [
     name: 'חליפה כחולה',
     description: 'נפתח אחרי עוד 3 חגורות.',
     unlockBelt: Belt.Black,
+    avatarSrc: judokaBlueAvatar,
     giColor: '#1f5ca8',
     giAccent: '#8fc7ff',
     themeAccent: '#3a7bd5',

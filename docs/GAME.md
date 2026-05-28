@@ -75,9 +75,9 @@ belt progress:
 | After another 3 belt promotions, at Black belt | חליפה כחולה |
 
 The chosen skin is saved with player progress. When a skin is selected, the main
-avatar wears that suit and the app's primary accent colors shift to match the
-chosen style. If old saved progress does not contain a selected skin, the game
-automatically uses the white suit.
+3D judoka avatar changes suit and the app's primary accent colors shift to match
+the chosen style. If old saved progress does not contain a selected skin, the
+game automatically uses the white suit.
 
 Skin rules live in `src/logic/skins.ts`; the selector is in
 `src/components/PlayerProfile.tsx`.

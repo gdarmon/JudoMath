@@ -52,6 +52,12 @@
 }
 
 /* --- Avatar --- */
+.main-menu__avatar-figure {
+  width: clamp(118px, 14vw, 154px);
+  height: clamp(118px, 14vw, 154px);
+  margin-bottom: 34px;
+}
+
 .main-menu__avatar {
   position: relative;
   width: 132px;

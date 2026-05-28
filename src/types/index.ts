@@ -23,6 +23,7 @@ export interface JudoSkin {
   name: string;
   description: string;
   unlockBelt: Belt;
+  avatarSrc: string;
   giColor: string;
   giAccent: string;
   themeAccent: string;

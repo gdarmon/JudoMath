@@ -22,6 +22,13 @@ function makePlayer(currentBelt: Belt, selectedSkin?: PlayerProgress['selectedSk
 }
 
 describe('skin unlock rules', () => {
+  it('assigns a 3D avatar image to every skin', () => {
+    for (const skin of getUnlockedSkins(Belt.Black)) {
+      expect(skin.avatarSrc).toContain('judoka-')
+      expect(skin.avatarSrc).toMatch(/\.(png|webp)$/)
+    }
+  })
+
   it('unlocks only the white suit at the start', () => {
     expect(getUnlockedSkins(Belt.White).map((skin) => skin.id)).toEqual(['white'])
     expect(isSkinUnlocked('black', Belt.White)).toBe(false)

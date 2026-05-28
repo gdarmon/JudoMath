@@ -28,7 +28,7 @@ confidence with arithmetic. That means:
 
 The game uses a soft judo/dojo theme:
 
-- A centered child-friendly hero avatar wearing the selected judo suit skin.
+- A centered child-friendly 3D judoka avatar wearing the selected judo suit skin.
 - Belt colors as the primary progression signal.
 - Warm highlights for actions and celebrations.
 - Large math typography.
@@ -48,11 +48,14 @@ The child can unlock:
 
 When a skin is selected, two things change:
 
-- The main avatar wears the selected suit color.
+- The main avatar switches to the matching 3D judoka image.
 - The app accent color and soft background shift toward the selected skin.
 
 Locked skins remain visible in the profile screen with an unlock hint. This
 gives the child a future goal without interrupting practice.
+
+Avatar image assets live in `src/assets/avatars/`. `JudoAvatar` only adds the
+soft background, shadow, and ready-stance motion around those generated assets.
 
 ## Hebrew and Math Direction
 

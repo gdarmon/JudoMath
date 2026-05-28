@@ -48,7 +48,7 @@ currently driven by `App.tsx`.
 | Component | Purpose |
 | --- | --- |
 | `MainMenu` | Landing screen with belt badge and main actions. |
-| `JudoAvatar` | Shared animated avatar that wears the selected suit skin. |
+| `JudoAvatar` | Shared animated avatar shell that displays the selected 3D judoka skin. |
 | `GameSession` | Normal 10-question practice session. |
 | `ProblemDisplay` | Large math problem, feedback, and correct-answer reveal. |
 | `AnswerChoices` | Six-choice answer grid for normal practice. |
@@ -181,6 +181,7 @@ The older 3-session tournament behavior remains available by rendering
 - Black suit: available from Green belt, after 3 belt promotions.
 - Blue suit: available from Black belt, after another 3 belt promotions.
 
+Each skin also points to a generated transparent PNG in `src/assets/avatars/`.
 `App.tsx` derives the active skin from `PlayerProgress.selectedSkin`, falls back
 to white when needed, and writes CSS variables on `.app-shell`. Components use
 those variables for the app accent color and pass the skin into `JudoAvatar`.

@@ -55,6 +55,7 @@
 .player-profile__avatar-figure {
   width: 144px;
   height: 144px;
+  margin-bottom: 22px;
 }
 
 @keyframes profile-bounce {
