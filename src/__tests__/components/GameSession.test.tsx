@@ -2,7 +2,27 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { GameSession } from '../../components/GameSession'
 import { Belt } from '../../types'
-import { GAME, BELT_NAMES, REWARD } from '../../i18n/he'
+import { GAME, BELT_NAMES, PROBLEM, REWARD } from '../../i18n/he'
+
+function currentCorrectAnswer(): number {
+  const operands = document.querySelectorAll('.problem-display__operand')
+  const operatorEl = document.querySelector('.problem-display__operator')
+  const op1 = parseInt(operands[0]?.textContent ?? '0', 10)
+  const op2 = parseInt(operands[1]?.textContent ?? '0', 10)
+  const operator = operatorEl?.textContent?.trim() ?? '+'
+  return operator === '+' ? op1 + op2 : op1 - op2
+}
+
+function submitCurrentCorrectAnswer() {
+  fireEvent.click(screen.getByLabelText(`תשובה ${currentCorrectAnswer()}`))
+}
+
+function skipRewardClip() {
+  act(() => {
+    vi.advanceTimersByTime(1000)
+  })
+  fireEvent.click(screen.getByLabelText(REWARD.skipAria))
+}
 
 describe('GameSession', () => {
   beforeEach(() => {
@@ -83,14 +103,7 @@ describe('GameSession', () => {
   it('shows the reward clip after a correct answer', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
 
-    const operands = document.querySelectorAll('.problem-display__operand')
-    const operatorEl = document.querySelector('.problem-display__operator')
-    const op1 = parseInt(operands[0]?.textContent ?? '0', 10)
-    const op2 = parseInt(operands[1]?.textContent ?? '0', 10)
-    const operator = operatorEl?.textContent?.trim() ?? '+'
-    const correct = operator === '+' ? op1 + op2 : op1 - op2
-
-    fireEvent.click(screen.getByLabelText(`תשובה ${correct}`))
+    submitCurrentCorrectAnswer()
 
     act(() => {
       vi.advanceTimersByTime(1000)
@@ -103,22 +116,23 @@ describe('GameSession', () => {
   it('advances to the next problem after the reward clip is skipped', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
 
-    const operands = document.querySelectorAll('.problem-display__operand')
-    const operatorEl = document.querySelector('.problem-display__operator')
-    const op1 = parseInt(operands[0]?.textContent ?? '0', 10)
-    const op2 = parseInt(operands[1]?.textContent ?? '0', 10)
-    const operator = operatorEl?.textContent?.trim() ?? '+'
-    const correct = operator === '+' ? op1 + op2 : op1 - op2
-
-    fireEvent.click(screen.getByLabelText(`תשובה ${correct}`))
-    act(() => {
-      vi.advanceTimersByTime(1000)
-    })
-
-    fireEvent.click(screen.getByLabelText(REWARD.skipAria))
+    submitCurrentCorrectAnswer()
+    skipRewardClip()
 
     expect(screen.getByText('2/10')).toBeInTheDocument()
     expect(screen.queryByRole('dialog', { name: REWARD.dialogAria })).not.toBeInTheDocument()
+  })
+
+  it('shows judo praise after a 3-answer correct streak', () => {
+    render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
+
+    submitCurrentCorrectAnswer()
+    skipRewardClip()
+    submitCurrentCorrectAnswer()
+    skipRewardClip()
+    submitCurrentCorrectAnswer()
+
+    expect(screen.getByText(PROBLEM.streakMessages[0])).toBeInTheDocument()
   })
 
   it('shows inactivity reminder after 30 seconds', () => {

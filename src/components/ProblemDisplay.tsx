@@ -6,6 +6,7 @@ export interface ProblemDisplayProps {
   problem: MathProblem
   feedback?: 'correct' | 'incorrect' | null
   showCorrectAnswer?: boolean
+  correctMessage?: string
 }
 
 /**
@@ -13,7 +14,12 @@ export interface ProblemDisplayProps {
  * (forced via .is-ltr) so digits and operators read normally
  * even inside an RTL document.
  */
-export function ProblemDisplay({ problem, feedback, showCorrectAnswer }: ProblemDisplayProps) {
+export function ProblemDisplay({
+  problem,
+  feedback,
+  showCorrectAnswer,
+  correctMessage,
+}: ProblemDisplayProps) {
   const feedbackClass = feedback ? `problem-display--${feedback}` : ''
 
   return (
@@ -31,7 +37,9 @@ export function ProblemDisplay({ problem, feedback, showCorrectAnswer }: Problem
       {feedback === 'correct' && (
         <div className="problem-display__feedback problem-display__feedback--correct">
           <span className="problem-display__icon" aria-label={PROBLEM.correctIcon}>✓</span>
-          <span className="problem-display__message">{PROBLEM.correctMessage}</span>
+          <span className="problem-display__message">
+            {correctMessage ?? PROBLEM.correctMessage}
+          </span>
         </div>
       )}
 

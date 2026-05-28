@@ -6,7 +6,7 @@ import { pickNextClip, pickFallbackClip } from '../logic/clipRotation'
 import { JUDO_CLIPS, CLIP_DURATION_SECONDS } from '../data/judoClips'
 import type { JudoClip } from '../data/judoClips'
 import { getBeltColor } from '../logic/beltColors'
-import { GAME, BELT_NAMES } from '../i18n/he'
+import { GAME, BELT_NAMES, PROBLEM } from '../i18n/he'
 import { ProblemDisplay } from './ProblemDisplay'
 import { AnswerChoices } from './AnswerChoices'
 import { RewardClip } from './RewardClip'
@@ -22,6 +22,7 @@ export interface GameSessionProps {
 const PROBLEMS_PER_SESSION = 10
 const FEEDBACK_DURATION_MS = 900
 const INACTIVITY_TIMEOUT_MS = 30000
+const STREAK_PRAISE_START = 3
 
 const BELT_TEXT_COLORS: Record<Belt, string> = {
   [Belt.White]: '#2d2a33',
@@ -31,6 +32,12 @@ const BELT_TEXT_COLORS: Record<Belt, string> = {
   [Belt.Blue]: '#ffffff',
   [Belt.Brown]: '#ffffff',
   [Belt.Black]: '#ffffff',
+}
+
+function praiseForStreak(streak: number): string | undefined {
+  if (streak < STREAK_PRAISE_START) return undefined
+  const praiseIndex = (streak - STREAK_PRAISE_START) % PROBLEM.streakMessages.length
+  return PROBLEM.streakMessages[praiseIndex]
 }
 
 export function GameSession({
@@ -53,6 +60,8 @@ export function GameSession({
   const [isInactive, setIsInactive] = useState(false)
   const [pickedAnswer, setPickedAnswer] = useState<number | null>(null)
   const [reward, setReward] = useState<JudoClip | null>(null)
+  const [correctStreak, setCorrectStreak] = useState(0)
+  const [correctPraise, setCorrectPraise] = useState<string | undefined>(undefined)
   const failedClipsRef = useRef<Set<string>>(new Set())
 
   const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -106,7 +115,10 @@ export function GameSession({
       setInputDisabled(true)
 
       if (isCorrect) {
+        const nextStreak = correctStreak + 1
         setCorrectCount((prev) => prev + 1)
+        setCorrectStreak(nextStreak)
+        setCorrectPraise(praiseForStreak(nextStreak))
         setFeedback('correct')
         setShowCorrectAnswer(false)
 
@@ -116,6 +128,8 @@ export function GameSession({
           setReward(clip)
         }, FEEDBACK_DURATION_MS)
       } else {
+        setCorrectStreak(0)
+        setCorrectPraise(undefined)
         setFeedback('incorrect')
         setShowCorrectAnswer(true)
 
@@ -124,7 +138,14 @@ export function GameSession({
         }, FEEDBACK_DURATION_MS + 600)
       }
     },
-    [advanceOrFinish, correctCount, currentProblem, inputDisabled, resetInactivityTimer],
+    [
+      advanceOrFinish,
+      correctCount,
+      correctStreak,
+      currentProblem,
+      inputDisabled,
+      resetInactivityTimer,
+    ],
   )
 
   const handleRewardClose = useCallback(() => {
@@ -216,6 +237,7 @@ export function GameSession({
           problem={currentProblem}
           feedback={feedback}
           showCorrectAnswer={showCorrectAnswer}
+          correctMessage={correctPraise}
         />
       </div>
 
