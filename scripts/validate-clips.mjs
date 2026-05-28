@@ -26,7 +26,7 @@ const clipsPath = resolve(projectRoot, 'src/data/judoClips.ts')
 function loadClipsFromSource() {
   const src = readFileSync(clipsPath, 'utf8')
   const out = []
-  const re = /\{\s*youtubeId:\s*['"]([^'"]+)['"]\s*,\s*title:\s*['"]((?:[^'"\\]|\\.)*)['"](?:\s*,\s*start:\s*(\d+))?\s*\}/g
+  const re = /\{\s*youtubeId:\s*"([^"]+)"\s*,\s*title:\s*"((?:[^"\\]|\\.)*)"(?:\s*,\s*start:\s*(\d+))?\s*\}/g
   let m
   while ((m = re.exec(src)) !== null) {
     out.push({ youtubeId: m[1], title: m[2], start: m[3] ? Number(m[3]) : undefined })

@@ -14,7 +14,9 @@
     "twa:icons": "node scripts/generate-twa-icons.mjs",
     "twa:init": "bubblewrap init --manifest=https://gdarmon.github.io/JudoMath/manifest.webmanifest",
     "twa:build": "bubblewrap build",
-    "clips:validate": "node scripts/validate-clips.mjs"
+    "clips:fetch": "node scripts/fetch-judo-clips.mjs",
+    "clips:validate": "node scripts/validate-clips.mjs",
+    "clips:check-browser": "node scripts/check-reward-clips-browser.mjs"
   },
   "dependencies": {
     "firebase": "^12.13.0",

@@ -61,7 +61,11 @@ async function fetchChannelFeed(source) {
   for (const v of [...fromPage, ...fromRss]) {
     if (!seen.has(v.youtubeId)) {
       seen.add(v.youtubeId)
-      combined.push({ ...v, source: source.label || source.value })
+      combined.push({
+        ...v,
+        source: source.label || source.value,
+        includeAll: Boolean(source.includeAll),
+      })
     }
   }
   return combined
@@ -87,7 +91,11 @@ async function fetchPlaylistFeed(source) {
     const res = await fetch(url, { headers: { 'User-Agent': 'judomath-clip-fetcher/1.0' } })
     if (!res.ok) return []
     const xml = await res.text()
-    return parseFeed(xml).map((v) => ({ ...v, source: source.label || source.value }))
+    return parseFeed(xml).map((v) => ({
+      ...v,
+      source: source.label || source.value,
+      includeAll: Boolean(source.includeAll),
+    }))
   } catch {
     return []
   }
@@ -102,7 +110,11 @@ async function fetchChannelVideosPage(channelId) {
   const url = `https://www.youtube.com/channel/${encodeURIComponent(channelId)}/videos`
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; judomath/1.0)', 'Accept-Language': 'en-US,en;q=0.9' },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; judomath/1.0)',
+        'Accept-Language': 'en-US,en;q=0.9',
+        Cookie: 'CONSENT=YES+cb; SOCS=CAI',
+      },
     })
     if (!res.ok) return []
     const html = await res.text()
@@ -142,7 +154,12 @@ async function resolveHandleToChannelId(handle) {
   const clean = handle.startsWith('@') ? handle : `@${handle}`
   const url = `https://www.youtube.com/${encodeURIComponent(clean)}`
   try {
-    const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; judomath/1.0)' } })
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; judomath/1.0)',
+        Cookie: 'CONSENT=YES+cb; SOCS=CAI',
+      },
+    })
     if (!res.ok) return null
     const html = await res.text()
     // YouTube embeds <link rel="canonical" href="https://www.youtube.com/channel/UCxxx" />
@@ -181,10 +198,13 @@ function decodeXmlEntities(s) {
 }
 
 /** Title-keyword filter — keep judo-relevant, drop the bad stuff. */
-function passesTitleFilter(title) {
+function passesTitleFilter(clip) {
+  const title = typeof clip === 'string' ? clip : clip.title
+  const includeAll = typeof clip === 'string' ? false : Boolean(clip.includeAll)
   const t = title.toLowerCase()
-  if (MUST_INCLUDE.length > 0 && !MUST_INCLUDE.some((kw) => t.includes(kw))) return false
   if (MUST_EXCLUDE.some((kw) => t.includes(kw))) return false
+  if (includeAll) return true
+  if (MUST_INCLUDE.length > 0 && !MUST_INCLUDE.some((kw) => t.includes(kw))) return false
   return true
 }
 
@@ -264,7 +284,7 @@ for (const src of sources.sources) {
 }
 
 console.error(`\nTotal candidates from feeds: ${allCandidates.length}`)
-const titleFiltered = allCandidates.filter((c) => passesTitleFilter(c.title))
+const titleFiltered = allCandidates.filter((c) => passesTitleFilter(c))
 console.error(`After title filter:           ${titleFiltered.length}`)
 
 // De-dupe by id.

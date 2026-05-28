@@ -28,13 +28,20 @@ export function RewardClip({
     completedRef.current = false
   }, [clip.youtubeId, durationSeconds])
 
-  const start = clip.start ?? 0
-  const end = start + durationSeconds
-
+  const embedParams = new URLSearchParams({
+    autoplay: '1',
+    mute: '0',
+    playsinline: '1',
+    controls: '1',
+    rel: '0',
+    modestbranding: '1',
+  })
+  if (clip.start && clip.start > 0) {
+    embedParams.set('start', String(clip.start))
+  }
   const embedUrl =
     `https://www.youtube-nocookie.com/embed/${encodeURIComponent(clip.youtubeId)}` +
-    `?autoplay=1&start=${start}&end=${end}` +
-    `&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&controls=1`
+    `?${embedParams.toString()}`
 
   useEffect(() => {
     const interval = setInterval(() => {
