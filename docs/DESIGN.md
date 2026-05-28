@@ -110,12 +110,15 @@ Key elements:
 - Full-screen modal.
 - Clip title.
 - Embedded YouTube video.
-- Countdown.
-- Skip button.
+- 30-second countdown.
+- Choice to keep watching after the timer ends.
+- Button to return to the game.
 - Fallback if the video does not load.
 
 The modal is intentionally skippable because sometimes the child wants speed,
-and sometimes the parent wants practice without waiting for every clip.
+and sometimes the parent wants practice without waiting for every clip. Once the
+timer ends, the video stays open until the child chooses whether to keep
+watching or continue the game.
 
 ## Session Results
 

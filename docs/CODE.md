@@ -52,7 +52,7 @@ currently driven by `App.tsx`.
 | `GameSession` | Normal 10-question practice session. |
 | `ProblemDisplay` | Large math problem, feedback, and correct-answer reveal. |
 | `AnswerChoices` | Six-choice answer grid for normal practice. |
-| `RewardClip` | Full-screen reward video modal. |
+| `RewardClip` | Full-screen reward video modal with timed prompt and extended watching. |
 | `SessionResults` | End-of-session score, stripe, and promotion messaging. |
 | `TournamentScreen` | Classic tournament flow or belt-based championship flow. |
 | `TournamentResults` | Tournament/championship score, time, and placement summary. |

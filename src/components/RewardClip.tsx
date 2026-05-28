@@ -19,11 +19,15 @@ export function RewardClip({
   onError,
 }: RewardClipProps) {
   const [secondsLeft, setSecondsLeft] = useState(durationSeconds)
+  const [showContinueChoice, setShowContinueChoice] = useState(false)
+  const [isExtendedWatching, setIsExtendedWatching] = useState(false)
   const [iframeError, setIframeError] = useState(false)
   const completedRef = useRef(false)
 
   useEffect(() => {
     setSecondsLeft(durationSeconds)
+    setShowContinueChoice(false)
+    setIsExtendedWatching(false)
     setIframeError(false)
     completedRef.current = false
   }, [clip.youtubeId, durationSeconds])
@@ -44,26 +48,36 @@ export function RewardClip({
     `?${embedParams.toString()}`
 
   useEffect(() => {
+    if (showContinueChoice || isExtendedWatching) return
+
     const interval = setInterval(() => {
       setSecondsLeft((s) => {
         if (s <= 1) {
           clearInterval(interval)
-          if (!completedRef.current) {
-            completedRef.current = true
-            onComplete()
-          }
+          setShowContinueChoice(true)
           return 0
         }
         return s - 1
       })
     }, 1000)
     return () => clearInterval(interval)
-  }, [onComplete, clip.youtubeId])
+  }, [clip.youtubeId, isExtendedWatching, showContinueChoice])
 
   const handleSkip = () => {
     if (completedRef.current) return
     completedRef.current = true
     onSkip()
+  }
+
+  const handleComplete = () => {
+    if (completedRef.current) return
+    completedRef.current = true
+    onComplete()
+  }
+
+  const handleContinueWatching = () => {
+    setShowContinueChoice(false)
+    setIsExtendedWatching(true)
   }
 
   const handleIframeError = () => {
@@ -100,22 +114,57 @@ export function RewardClip({
         </div>
 
         <footer className="reward-clip__footer">
-          <span
-            className="reward-clip__countdown is-ltr"
-            aria-live="polite"
-            aria-label={REWARD.countdownAria(secondsLeft)}
-          >
-            {secondsLeft}s
-          </span>
-          <button
-            type="button"
-            className="reward-clip__skip"
-            onClick={handleSkip}
-            aria-label={REWARD.skipAria}
-            autoFocus
-          >
-            <span aria-hidden="true">⏭</span> {REWARD.skip}
-          </button>
+          {showContinueChoice ? (
+            <>
+              <span className="reward-clip__watch-prompt" role="status">
+                {REWARD.keepWatchingPrompt}
+              </span>
+              <div className="reward-clip__actions">
+                <button
+                  type="button"
+                  className="reward-clip__button reward-clip__button--watch"
+                  onClick={handleContinueWatching}
+                  aria-label={REWARD.continueWatchingAria}
+                  autoFocus
+                >
+                  <span aria-hidden="true">▶️</span> {REWARD.continueWatching}
+                </button>
+                <button
+                  type="button"
+                  className="reward-clip__button reward-clip__button--game"
+                  onClick={handleComplete}
+                  aria-label={REWARD.continueGameAria}
+                >
+                  <span aria-hidden="true">🥋</span> {REWARD.continueGame}
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {isExtendedWatching ? (
+                <span className="reward-clip__watch-prompt" role="status">
+                  {REWARD.extendedWatching}
+                </span>
+              ) : (
+                <span
+                  className="reward-clip__countdown is-ltr"
+                  aria-live="polite"
+                  aria-label={REWARD.countdownAria(secondsLeft)}
+                >
+                  {secondsLeft}s
+                </span>
+              )}
+              <button
+                type="button"
+                className="reward-clip__button reward-clip__button--game"
+                onClick={isExtendedWatching ? handleComplete : handleSkip}
+                aria-label={isExtendedWatching ? REWARD.continueGameAria : REWARD.skipAria}
+              >
+                <span aria-hidden="true">⏭</span>{' '}
+                {isExtendedWatching ? REWARD.continueGame : REWARD.skip}
+              </button>
+            </>
+          )}
         </footer>
       </div>
     </div>

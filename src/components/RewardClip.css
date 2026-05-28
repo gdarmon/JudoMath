@@ -136,7 +136,24 @@
   background: #f5f5f5;
 }
 
-.reward-clip__skip {
+.reward-clip__watch-prompt {
+  flex: 1;
+  font-size: 20px;
+  font-weight: 800;
+  color: #4a3f56;
+  text-align: center;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: #fff8ee;
+}
+
+.reward-clip__actions {
+  flex: 2;
+  display: flex;
+  gap: 10px;
+}
+
+.reward-clip__button {
   flex: 1;
   display: flex;
   align-items: center;
@@ -156,14 +173,31 @@
   min-height: 60px;
 }
 
-.reward-clip__skip:hover,
-.reward-clip__skip:focus-visible {
+.reward-clip__button--game {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+.reward-clip__button--watch {
+  background: linear-gradient(135deg, #ff9800, #ffc233);
+  color: #332200;
+  box-shadow: 0 6px 16px rgba(255, 152, 0, 0.32);
+}
+
+.reward-clip__button:hover,
+.reward-clip__button:focus-visible {
   transform: scale(1.04);
   box-shadow: 0 8px 22px rgba(76, 175, 80, 0.5);
   outline: none;
 }
 
-.reward-clip__skip:active {
+.reward-clip__button--watch:hover,
+.reward-clip__button--watch:focus-visible {
+  box-shadow: 0 8px 22px rgba(255, 152, 0, 0.44);
+}
+
+.reward-clip__button:active {
   transform: scale(0.97);
 }
 
@@ -172,6 +206,9 @@
   .reward-clip__trophy { font-size: 44px; }
   .reward-clip__title { font-size: 26px; }
   .reward-clip__subtitle { font-size: 16px; }
-  .reward-clip__skip { font-size: 18px; padding: 14px 20px; min-height: 52px; }
+  .reward-clip__footer { flex-direction: column; align-items: stretch; }
+  .reward-clip__actions { flex-direction: column; }
+  .reward-clip__button { font-size: 18px; padding: 14px 20px; min-height: 52px; }
   .reward-clip__countdown { font-size: 18px; min-width: 54px; padding: 8px 12px; }
+  .reward-clip__watch-prompt { font-size: 18px; }
 }

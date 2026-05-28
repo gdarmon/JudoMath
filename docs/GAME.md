@@ -34,7 +34,7 @@ The generator lives in `src/logic/problemGenerator.ts`.
 | Questions per session | 10 |
 | Answer choices | 6 |
 | Progress threshold | 75% |
-| Reward clip duration | 30 seconds |
+| Reward clip timer | 30 seconds, then the child can keep watching |
 | Streak praise starts | 3 correct answers in a row |
 
 Each question is multiple choice. Correct answers trigger feedback, streak
@@ -107,6 +107,8 @@ Current behavior:
 - Clips are chosen through `src/logic/clipRotation.ts`.
 - The rotation avoids repeats until the full pool has been used.
 - If a clip fails to load, the app tries another clip.
+- After the 30-second reward timer, the clip does not close automatically. The
+  child can either keep watching or return to the game.
 
 The app does not inject ads. YouTube can still control its own playback and ad
 behavior, so browser validation checks embeddability and load errors rather than
