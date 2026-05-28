@@ -13,7 +13,8 @@
     "test:e2e": "playwright test",
     "twa:icons": "node scripts/generate-twa-icons.mjs",
     "twa:init": "bubblewrap init --manifest=https://gdarmon.github.io/JudoMath/manifest.webmanifest",
-    "twa:build": "bubblewrap build"
+    "twa:build": "bubblewrap build",
+    "clips:validate": "node scripts/validate-clips.mjs"
   },
   "dependencies": {
     "firebase": "^12.13.0",

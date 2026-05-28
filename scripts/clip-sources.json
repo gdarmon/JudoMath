@@ -1,31 +1,68 @@
 {
-  "$comment": "Configures which YouTube channels and playlists are pulled into src/data/judoClips.ts. Each entry uses one of three forms: channelHandle (e.g. '@JudoTV'), channelId (UC...), or playlistId (PL...). Add or remove entries to curate the pool. The fetch script (scripts/fetch-judo-clips.mjs) calls the YouTube Data API and filters to embeddable, kid-appropriate videos.",
+  "$comment": "Channels & playlists feeding scripts/fetch-judo-clips.mjs. The script pulls each channel's RSS (15 latest videos), filters by title keywords, then validates every survivor via YouTube oEmbed. Hebrew channels included.",
 
   "targetCount": 100,
   "minDurationSeconds": 30,
   "maxDurationSeconds": 900,
 
-  "titleMustContain": ["judo"],
+  "$comment2": "titleMustContain is OR — any one of these in the title keeps the clip. titleMustAlsoContain is AND — every clip MUST also contain at least one of these (we always require something judo-related to keep wide-channel videos out).",
+  "titleMustContain": [
+    "judo",
+    "ippon",
+    "seoi",
+    "uchi mata",
+    "uchimata",
+    "harai goshi",
+    "haraigoshi",
+    "osoto",
+    "ouchi",
+    "kouchi",
+    "tomoenage",
+    "tomoe nage",
+    "tai otoshi",
+    "kosoto",
+    "kataguruma",
+    "ukemi",
+    "newaza",
+    "tachi waza",
+    "tachi-waza",
+    "kano",
+    "kodokan",
+    "judogi",
+    "judoka",
+    "ג'ודו",
+    "גודו",
+    "ג׳ודו"
+  ],
+
   "titleMustNotContain": [
     "injury",
     "broken",
     "knockout",
-    "ko ",
-    "blood",
-    "fight",
-    "diss",
+    "bloody",
     "drama",
+    "scandal",
     "shocking",
-    "fail",
-    "compilation fails",
-    "scandal"
+    "knocked out",
+    "trash talk",
+    "פציעה"
   ],
 
   "sources": [
-    { "type": "channelHandle", "value": "@JudoTV", "label": "IJF JudoTV (official)" },
-    { "type": "channelHandle", "value": "@JudoChannel", "label": "International Judo Federation" },
-    { "type": "channelHandle", "value": "@olympics", "label": "Olympics (judo only)" },
-    { "type": "channelHandle", "value": "@JudoFanatics", "label": "Judo Fanatics (instructional)" },
-    { "type": "channelHandle", "value": "@KodokanInstituteofJudo", "label": "Kodokan Institute of Judo" }
+    { "type": "channelHandle", "value": "@JudoChannel",       "label": "IJF International Judo Federation" },
+    { "type": "channelHandle", "value": "@olympics",          "label": "Olympics" },
+    { "type": "channelHandle", "value": "@JudoFanatics",      "label": "Judo Fanatics" },
+    { "type": "channelHandle", "value": "@JudoCrazy",         "label": "JudoCrazy" },
+    { "type": "channelHandle", "value": "@nbcsports",         "label": "NBC Sports" },
+    { "type": "channelHandle", "value": "@WorldGames",        "label": "World Games" },
+    { "type": "channelHandle", "value": "@JudoBlog",          "label": "Judo Blog" },
+    { "type": "channelHandle", "value": "@BeyondGrappling",   "label": "Beyond Grappling" },
+    { "type": "channelHandle", "value": "@MattDAquinoJudo",   "label": "Matt D'Aquino" },
+    { "type": "channelHandle", "value": "@JudokaTV",          "label": "JudokaTV" },
+    { "type": "channelHandle", "value": "@JudoJoy",           "label": "Judo Joy" },
+    { "type": "channelHandle", "value": "@IJFmedia",          "label": "IJF Media" },
+
+    { "type": "channelHandle", "value": "@ija",               "label": "Israel Judo Association (IJA)" },
+    { "type": "channelHandle", "value": "@JudoIsrael",        "label": "Judo Israel" }
   ]
 }
