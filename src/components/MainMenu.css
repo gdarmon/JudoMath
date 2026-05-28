@@ -1,0 +1,167 @@
+/* Main Menu - Child-friendly, Judo-themed */
+
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 32px 16px;
+}
+
+/* Header with avatar and title */
+.main-menu__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.main-menu__title {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #ff6b6b, #ffa500, #fdd835);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Avatar section */
+.main-menu__avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-menu__avatar-icon {
+  font-size: 64px;
+  display: block;
+  animation: gentle-bounce 2s ease-in-out infinite;
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.main-menu__belt-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.main-menu__stripes {
+  font-weight: 700;
+}
+
+/* Navigation buttons */
+.main-menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.main-menu__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 32px;
+  border: none;
+  border-radius: 24px;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: 72px;
+}
+
+.main-menu__button:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.main-menu__button:active {
+  transform: scale(0.96);
+}
+
+.main-menu__button:focus-visible {
+  outline: 3px solid #333;
+  outline-offset: 3px;
+}
+
+/* Button color variants */
+.main-menu__button--play {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: #ffffff;
+}
+
+.main-menu__button--tournament {
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  color: #ffffff;
+}
+
+.main-menu__button--profile {
+  background: linear-gradient(135deg, #2196f3, #64b5f6);
+  color: #ffffff;
+}
+
+.main-menu__button-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.main-menu__button-label {
+  font-size: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .main-menu__title {
+    font-size: 36px;
+  }
+
+  .main-menu__avatar-icon {
+    font-size: 48px;
+  }
+
+  .main-menu__button {
+    padding: 16px 24px;
+    min-height: 64px;
+  }
+
+  .main-menu__button-icon {
+    font-size: 28px;
+  }
+
+  .main-menu__button-label {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .main-menu__nav {
+    flex-direction: row;
+    max-width: 600px;
+    gap: 20px;
+  }
+
+  .main-menu__button {
+    flex: 1;
+    flex-direction: column;
+    padding: 24px 16px;
+    min-height: 120px;
+  }
+
+  .main-menu__button-icon {
+    font-size: 40px;
+  }
+}

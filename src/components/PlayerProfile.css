@@ -1,0 +1,240 @@
+/* Player Profile - Child-friendly, Judo-themed */
+
+.player-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 32px 16px;
+}
+
+/* Avatar section */
+.player-profile__avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-profile__avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-profile__avatar-icon {
+  font-size: 96px;
+  display: block;
+  animation: profile-bounce 2.5s ease-in-out infinite;
+}
+
+@keyframes profile-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.player-profile__belt-indicator {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.player-profile__belt-badge {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Stripe progress section */
+.player-profile__stripes-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.player-profile__section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #333;
+}
+
+.player-profile__stripes-display {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.player-profile__stripe {
+  width: 40px;
+  height: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.player-profile__stripe--earned {
+  background: linear-gradient(135deg, #fdd835, #ffb300);
+  box-shadow: 0 2px 6px rgba(253, 216, 53, 0.4);
+  transform: scaleY(1.2);
+}
+
+.player-profile__stripe--empty {
+  background: #e0e0e0;
+}
+
+.player-profile__stripes-text {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+  text-align: center;
+}
+
+.player-profile__stripes-remaining {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+/* Stats section */
+.player-profile__stats-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.player-profile__stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.player-profile__stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.player-profile__stat-icon {
+  font-size: 28px;
+}
+
+.player-profile__stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+}
+
+.player-profile__stat-label {
+  font-size: 13px;
+  color: #777;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Back button */
+.player-profile__back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #78909c, #90a4ae);
+  color: #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: 56px;
+  margin-top: 8px;
+}
+
+.player-profile__back-button:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.player-profile__back-button:active {
+  transform: scale(0.96);
+}
+
+.player-profile__back-button:focus-visible {
+  outline: 3px solid #333;
+  outline-offset: 3px;
+}
+
+.player-profile__back-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.player-profile__back-label {
+  font-size: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .player-profile__avatar-icon {
+    font-size: 72px;
+  }
+
+  .player-profile__belt-indicator {
+    width: 48px;
+    height: 6px;
+  }
+
+  .player-profile__belt-badge {
+    font-size: 16px;
+  }
+
+  .player-profile__stat-value {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .player-profile {
+    gap: 36px;
+    padding: 48px 32px;
+  }
+
+  .player-profile__stripes-section,
+  .player-profile__stats-section {
+    max-width: 400px;
+  }
+
+  .player-profile__stats-grid {
+    gap: 16px;
+  }
+
+  .player-profile__stat-card {
+    padding: 20px 16px;
+  }
+}

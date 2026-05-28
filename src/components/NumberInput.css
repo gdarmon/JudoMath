@@ -1,0 +1,168 @@
+/* Number Input Pad - Child-friendly, touch-optimized */
+.number-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Display area showing the entered number */
+.number-input__display {
+  width: 100%;
+  background: #f8f7fa;
+  border: 3px solid #e5e4e7;
+  border-radius: 16px;
+  padding: 12px 24px;
+  text-align: center;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-input__value {
+  font-size: 48px;
+  font-weight: 700;
+  color: #2d2a33;
+  line-height: 1;
+}
+
+/* Number pad grid layout */
+.number-input__pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+/* Base button styles - large touch targets */
+.number-input__btn {
+  font-size: 32px;
+  font-weight: 600;
+  min-width: 48px;
+  min-height: 56px;
+  padding: 12px 8px;
+  border-radius: 14px;
+  border: 2px solid #e5e4e7;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Digit buttons */
+.number-input__btn--digit {
+  background: #ffffff;
+  color: #2d2a33;
+}
+
+.number-input__btn--digit:hover:not(:disabled) {
+  background: #f0eef5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.number-input__btn--digit:active:not(:disabled) {
+  transform: scale(0.93);
+  background: #e8e5f0;
+}
+
+/* Action buttons (Clear, Backspace) */
+.number-input__btn--action {
+  background: #fff3e0;
+  color: #e65100;
+  border-color: #ffcc80;
+}
+
+.number-input__btn--action:hover:not(:disabled) {
+  background: #ffe0b2;
+  box-shadow: 0 2px 8px rgba(230, 81, 0, 0.1);
+}
+
+.number-input__btn--action:active:not(:disabled) {
+  transform: scale(0.93);
+  background: #ffcc80;
+}
+
+/* Submit button */
+.number-input__btn--submit {
+  width: 100%;
+  font-size: 32px;
+  min-height: 60px;
+  padding: 14px 24px;
+  background: #4caf50;
+  color: #ffffff;
+  border: 2px solid #388e3c;
+  border-radius: 16px;
+}
+
+.number-input__btn--submit:hover:not(:disabled) {
+  background: #43a047;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.number-input__btn--submit:active:not(:disabled) {
+  transform: scale(0.96);
+  background: #388e3c;
+}
+
+/* Disabled state */
+.number-input__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Focus visible for keyboard navigation */
+.number-input__btn:focus-visible {
+  outline: 3px solid #7c4dff;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 767px) {
+  .number-input {
+    max-width: 320px;
+  }
+
+  .number-input__btn {
+    font-size: 28px;
+    min-height: 52px;
+  }
+
+  .number-input__value {
+    font-size: 40px;
+  }
+
+  .number-input__btn--submit {
+    font-size: 28px;
+    min-height: 56px;
+  }
+}
+
+/* Larger screens - more generous spacing */
+@media (min-width: 768px) {
+  .number-input {
+    max-width: 400px;
+  }
+
+  .number-input__pad {
+    gap: 12px;
+  }
+
+  .number-input__btn {
+    min-height: 64px;
+    font-size: 36px;
+  }
+
+  .number-input__btn--submit {
+    min-height: 68px;
+    font-size: 36px;
+  }
+}

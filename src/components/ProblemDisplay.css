@@ -1,0 +1,145 @@
+/* Problem Display - Large, child-friendly math problem presentation */
+.problem-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--problem-bg, #ffffff);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Correct feedback state */
+.problem-display--correct {
+  background-color: var(--correct-bg, #e8f8e8);
+  box-shadow: 0 4px 20px rgba(72, 199, 72, 0.25);
+  animation: pulse-correct 0.5s ease;
+}
+
+/* Incorrect feedback state */
+.problem-display--incorrect {
+  background-color: var(--incorrect-bg, #fde8e8);
+  box-shadow: 0 4px 20px rgba(220, 80, 80, 0.2);
+  animation: shake-incorrect 0.4s ease;
+}
+
+/* Equation layout */
+.problem-display__equation {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* All equation elements use large font (≥32px per requirement 2.2) */
+.problem-display__operand,
+.problem-display__operator,
+.problem-display__equals,
+.problem-display__answer {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-h, #08060d);
+}
+
+.problem-display__operator {
+  color: var(--accent, #aa3bff);
+}
+
+.problem-display__equals {
+  color: var(--text-muted, #6b6b6b);
+}
+
+.problem-display__answer {
+  color: var(--accent, #aa3bff);
+  min-width: 48px;
+  text-align: center;
+}
+
+/* Feedback area */
+.problem-display__feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  animation: fade-in 0.3s ease;
+}
+
+.problem-display__feedback--correct {
+  color: var(--correct-text, #1a7a1a);
+}
+
+.problem-display__feedback--incorrect {
+  color: var(--incorrect-text, #c03030);
+}
+
+.problem-display__icon {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.problem-display__message {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.problem-display__correct-answer {
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 4px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: rgba(192, 48, 48, 0.08);
+}
+
+/* Animations */
+@keyframes pulse-correct {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake-incorrect {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 767px) {
+  .problem-display {
+    padding: 16px;
+  }
+
+  .problem-display__operand,
+  .problem-display__operator,
+  .problem-display__equals,
+  .problem-display__answer {
+    font-size: 36px;
+  }
+
+  .problem-display__icon {
+    font-size: 32px;
+  }
+
+  .problem-display__message {
+    font-size: 20px;
+  }
+
+  .problem-display__correct-answer {
+    font-size: 18px;
+  }
+}

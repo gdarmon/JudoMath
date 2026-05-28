@@ -1,0 +1,104 @@
+/* ==========================================================================
+   CSS Custom Properties - Judo Math Game
+   Centralized design tokens for colors, spacing, typography, and breakpoints.
+   ========================================================================== */
+
+:root {
+  /* --- Breakpoints (reference values, used in media queries) --- */
+  --breakpoint-mobile: 768px;
+  --viewport-min: 320px;
+  --viewport-max: 1920px;
+
+  /* --- Colors: Game Theme --- */
+  --color-primary: #4caf50;
+  --color-primary-light: #66bb6a;
+  --color-secondary: #ff9800;
+  --color-secondary-light: #ffb74d;
+  --color-accent: #7c4dff;
+  --color-accent-light: #b388ff;
+  --color-danger: #f44336;
+  --color-danger-light: #ef5350;
+  --color-success: #4caf50;
+  --color-warning: #ffcc02;
+
+  /* --- Colors: Belt System --- */
+  --belt-white: #ffffff;
+  --belt-yellow: #fdd835;
+  --belt-orange: #ff9800;
+  --belt-green: #4caf50;
+  --belt-blue: #2196f3;
+  --belt-brown: #795548;
+  --belt-black: #212121;
+
+  /* --- Colors: UI --- */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-text: #2d2a33;
+  --color-text-secondary: #6b6375;
+  --color-border: #e5e4e7;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+
+  /* --- Typography --- */
+  --font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: ui-monospace, Consolas, monospace;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 18px;
+  --font-size-lg: 24px;
+  --font-size-xl: 32px;
+  --font-size-2xl: 36px;
+  --font-size-3xl: 48px;
+  --font-size-math: 32px; /* Minimum for math content per requirement 2.2 */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* --- Spacing --- */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* --- Border Radius --- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-round: 50%;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.15);
+
+  /* --- Transitions --- */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-layout: 400ms ease; /* For orientation/layout changes, under 500ms */
+
+  /* --- Z-Index Scale --- */
+  --z-base: 0;
+  --z-overlay: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  /* --- Touch Target --- */
+  --touch-target-min: 44px; /* WCAG minimum touch target */
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #16171d;
+    --color-bg-secondary: #1f2028;
+    --color-text: #f3f4f6;
+    --color-text-secondary: #9ca3af;
+    --color-border: #2e303a;
+    --color-shadow: rgba(0, 0, 0, 0.3);
+  }
+}

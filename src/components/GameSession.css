@@ -1,0 +1,204 @@
+/* Game Session - Main gameplay screen */
+
+.game-session {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Header: back button, progress counter, belt indicator */
+.game-session__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.game-session__back-btn {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 12px;
+  background: #f0eef5;
+  color: #555;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  touch-action: manipulation;
+}
+
+.game-session__back-btn:hover {
+  background: #e5e2ed;
+}
+
+.game-session__back-btn:active {
+  transform: scale(0.95);
+}
+
+.game-session__back-btn:focus-visible {
+  outline: 3px solid #7c4dff;
+  outline-offset: 2px;
+}
+
+/* Progress counter "3/10" */
+.game-session__progress-info {
+  display: flex;
+  align-items: center;
+}
+
+.game-session__problem-counter {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d2a33;
+}
+
+/* Belt indicator badge */
+.game-session__belt-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.game-session__belt-name {
+  font-size: 14px;
+}
+
+.game-session__belt-stripes {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Progress bar */
+.game-session__progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e8e5f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.game-session__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #66bb6a);
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+/* Inactivity reminder */
+.game-session__reminder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: #fff8e1;
+  border: 2px solid #ffcc02;
+  border-radius: 16px;
+  animation: reminder-bounce 1s ease-in-out infinite;
+}
+
+.game-session__reminder-icon {
+  font-size: 28px;
+}
+
+.game-session__reminder-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5d4037;
+}
+
+@keyframes reminder-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Inactive state - subtle pulse on the whole session */
+.game-session--inactive {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.92; }
+}
+
+/* Problem area */
+.game-session__problem {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Input area */
+.game-session__input {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 767px) {
+  .game-session {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .game-session__back-btn {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+
+  .game-session__problem-counter {
+    font-size: 20px;
+  }
+
+  .game-session__belt-indicator {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .game-session__belt-name {
+    font-size: 12px;
+  }
+
+  .game-session__reminder-text {
+    font-size: 16px;
+  }
+}
+
+/* Larger screens */
+@media (min-width: 768px) {
+  .game-session {
+    padding: 24px;
+    gap: 24px;
+    max-width: 700px;
+  }
+
+  .game-session__problem-counter {
+    font-size: 28px;
+  }
+
+  .game-session__belt-indicator {
+    padding: 8px 18px;
+    font-size: 16px;
+  }
+
+  .game-session__belt-name {
+    font-size: 16px;
+  }
+
+  .game-session__progress-bar {
+    height: 12px;
+  }
+}

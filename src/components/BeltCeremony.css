@@ -1,0 +1,299 @@
+/**
+ * Belt Ceremony - Full-screen overlay celebration animation
+ * Uses GPU-accelerated properties for smooth 30fps+ performance.
+ */
+
+/* === Full-screen overlay === */
+.belt-ceremony {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 24px;
+  will-change: opacity;
+  animation: belt-ceremony-fade-in 0.4s ease-out;
+}
+
+@keyframes belt-ceremony-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* === Lottie animation container === */
+.belt-ceremony__lottie {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.belt-ceremony__lottie svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* === CSS fallback celebration (confetti-like particles) === */
+.belt-ceremony__css-celebration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.belt-ceremony__particle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  will-change: transform, opacity;
+  animation: belt-ceremony-particle 3s ease-out forwards;
+}
+
+.belt-ceremony__particle:nth-child(1) {
+  left: 10%;
+  top: 20%;
+  background: #fdd835;
+  animation-delay: 0s;
+}
+
+.belt-ceremony__particle:nth-child(2) {
+  left: 25%;
+  top: 15%;
+  background: #ff5722;
+  animation-delay: 0.1s;
+  width: 8px;
+  height: 8px;
+}
+
+.belt-ceremony__particle:nth-child(3) {
+  left: 40%;
+  top: 10%;
+  background: #4caf50;
+  animation-delay: 0.2s;
+}
+
+.belt-ceremony__particle:nth-child(4) {
+  left: 55%;
+  top: 18%;
+  background: #2196f3;
+  animation-delay: 0.15s;
+  width: 10px;
+  height: 10px;
+}
+
+.belt-ceremony__particle:nth-child(5) {
+  left: 70%;
+  top: 12%;
+  background: #e91e63;
+  animation-delay: 0.25s;
+}
+
+.belt-ceremony__particle:nth-child(6) {
+  left: 85%;
+  top: 22%;
+  background: #9c27b0;
+  animation-delay: 0.05s;
+  width: 14px;
+  height: 14px;
+}
+
+.belt-ceremony__particle:nth-child(7) {
+  left: 15%;
+  top: 5%;
+  background: #ff9800;
+  animation-delay: 0.3s;
+  width: 9px;
+  height: 9px;
+}
+
+.belt-ceremony__particle:nth-child(8) {
+  left: 60%;
+  top: 8%;
+  background: #00bcd4;
+  animation-delay: 0.35s;
+}
+
+.belt-ceremony__particle:nth-child(9) {
+  left: 35%;
+  top: 25%;
+  background: #fdd835;
+  animation-delay: 0.4s;
+  width: 7px;
+  height: 7px;
+}
+
+.belt-ceremony__particle:nth-child(10) {
+  left: 80%;
+  top: 5%;
+  background: #4caf50;
+  animation-delay: 0.12s;
+  width: 11px;
+  height: 11px;
+}
+
+.belt-ceremony__particle:nth-child(11) {
+  left: 50%;
+  top: 3%;
+  background: #ff5722;
+  animation-delay: 0.22s;
+}
+
+.belt-ceremony__particle:nth-child(12) {
+  left: 90%;
+  top: 15%;
+  background: #2196f3;
+  animation-delay: 0.18s;
+  width: 8px;
+  height: 8px;
+}
+
+@keyframes belt-ceremony-particle {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(60vh) rotate(720deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* === Content area (belt badge + text) === */
+.belt-ceremony__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  will-change: transform, opacity;
+  animation: belt-ceremony-content-enter 0.8s ease-out 0.3s both;
+}
+
+@keyframes belt-ceremony-content-enter {
+  from {
+    transform: scale(0.5) translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* === Congratulations text === */
+.belt-ceremony__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* === Belt badge === */
+.belt-ceremony__badge {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  box-shadow: 0 0 40px 12px var(--belt-glow-color, rgba(255, 215, 0, 0.5));
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  will-change: transform, box-shadow;
+  animation: belt-ceremony-badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes belt-ceremony-badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 40px 12px var(--belt-glow-color, rgba(255, 215, 0, 0.5));
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 60px 20px var(--belt-glow-color, rgba(255, 215, 0, 0.6));
+  }
+}
+
+/* === Belt name label === */
+.belt-ceremony__belt-name {
+  font-size: 36px;
+  font-weight: 800;
+  padding: 8px 24px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* === Subtitle text === */
+.belt-ceremony__subtitle {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+/* === Dismiss button === */
+.belt-ceremony__dismiss {
+  margin-top: 16px;
+  padding: 14px 36px;
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  touch-action: manipulation;
+}
+
+.belt-ceremony__dismiss:hover,
+.belt-ceremony__dismiss:focus-visible {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.5);
+  outline: none;
+}
+
+.belt-ceremony__dismiss:active {
+  transform: scale(0.97);
+}
+
+/* === Responsive adjustments === */
+@media (max-width: 767px) {
+  .belt-ceremony__badge {
+    width: 110px;
+    height: 110px;
+    font-size: 44px;
+  }
+
+  .belt-ceremony__title {
+    font-size: 22px;
+  }
+
+  .belt-ceremony__belt-name {
+    font-size: 28px;
+  }
+
+  .belt-ceremony__dismiss {
+    padding: 12px 28px;
+    font-size: 18px;
+  }
+}

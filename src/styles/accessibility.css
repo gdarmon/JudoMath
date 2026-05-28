@@ -1,0 +1,170 @@
+/* ==========================================================================
+   Accessibility Styles - Judo Math Game
+   Ensures WCAG compliance for young children (ages 6-7).
+   
+   Features:
+   - Focus-visible styles for all interactive elements
+   - Reduced motion support for vestibular sensitivity
+   - High contrast mode support
+   - Minimum touch target sizes (44px per WCAG 2.5.5)
+   - Safety: blocks any accidental external links
+   
+   Requirements: 10.1, 10.2, 10.3, 10.4, 10.6
+   ========================================================================== */
+
+/* --- Focus-Visible Styles for All Interactive Elements --- */
+
+/* Global focus-visible ring for buttons, inputs, and interactive elements */
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--color-accent, #7c4dff);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm, 8px);
+}
+
+/* Remove default outline for mouse/touch users */
+button:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+[tabindex]:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* --- Minimum Touch Target Sizes (44px × 44px) --- */
+
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* --- Reduced Motion Support --- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- High Contrast Mode Support --- */
+
+@media (forced-colors: active) {
+  button,
+  [role="button"] {
+    border: 2px solid ButtonText;
+  }
+
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .problem-display__operand,
+  .problem-display__operator,
+  .problem-display__equals,
+  .problem-display__answer {
+    color: CanvasText;
+  }
+
+  .problem-display--correct {
+    border: 3px solid Highlight;
+  }
+
+  .problem-display--incorrect {
+    border: 3px solid LinkText;
+  }
+}
+
+/* --- Safety: Block External Links (Requirement 10.6) --- */
+/* Prevent any accidentally added external links from being visible or clickable */
+
+a[href^="http"],
+a[href^="//"] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* --- Screen Reader Utilities --- */
+
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to content link (visible on focus) */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: var(--color-primary, #4caf50);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: var(--radius-md, 12px);
+  z-index: var(--z-toast, 300);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+/* --- Ensure Math Content Font Size ≥ 32px (Requirement 2.2) --- */
+
+.problem-display__operand,
+.problem-display__operator,
+.problem-display__equals,
+.problem-display__answer,
+.number-input__value,
+.number-input__btn {
+  font-size: max(32px, var(--font-size-math, 32px));
+}
+
+/* --- Interactive Element Cursor and States --- */
+
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* --- Selection Styles --- */
+
+::selection {
+  background: var(--color-accent-light, #b388ff);
+  color: #ffffff;
+}

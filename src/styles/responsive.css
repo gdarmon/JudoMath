@@ -1,0 +1,223 @@
+/* ==========================================================================
+   Responsive Layout System - Judo Math Game
+   Centralized responsive utilities with breakpoint at 768px.
+   Supports viewport range: 320px to 1920px.
+   Orientation changes handled within 500ms via CSS transitions.
+   
+   Requirements: 11.3, 11.4, 11.5, 11.7
+   ========================================================================== */
+
+/* --- Base Layout Container --- */
+.layout {
+  width: 100%;
+  min-width: 320px;
+  max-width: 1920px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  transition:
+    grid-template-columns var(--transition-layout, 400ms ease),
+    padding var(--transition-layout, 400ms ease),
+    gap var(--transition-layout, 400ms ease);
+}
+
+/* --- Single-Column Layout (viewport < 768px) --- */
+.layout--single-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-md, 16px);
+  gap: var(--space-md, 16px);
+}
+
+/* --- Multi-Column Layout (viewport >= 768px) --- */
+.layout--multi-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: var(--space-lg, 24px);
+  gap: var(--space-lg, 24px);
+}
+
+/* Full-width items in multi-column layout */
+.layout--multi-column > .layout__full-width {
+  grid-column: 1 / -1;
+}
+
+/* --- Responsive Layout via Media Queries --- */
+
+/* Single-column: viewport below 768px */
+@media (max-width: 767px) {
+  .layout--responsive {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md, 16px);
+    gap: var(--space-md, 16px);
+  }
+
+  .layout--responsive > * {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Multi-column: viewport at or above 768px */
+@media (min-width: 768px) {
+  .layout--responsive {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: var(--space-lg, 24px);
+    gap: var(--space-lg, 24px);
+  }
+
+  .layout--responsive > .layout__full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+/* --- Viewport Constraints --- */
+/* Ensure content stays within supported viewport range */
+@media (max-width: 320px) {
+  .layout,
+  .layout--responsive {
+    min-width: 320px;
+    padding: var(--space-sm, 8px);
+  }
+}
+
+@media (min-width: 1920px) {
+  .layout,
+  .layout--responsive {
+    max-width: 1920px;
+  }
+}
+
+/* --- Orientation Change Handling --- */
+/* Smooth transitions for layout re-adaptation within 500ms (Requirement 11.7) */
+.layout,
+.layout--responsive,
+.screen,
+.app-content {
+  transition:
+    grid-template-columns 400ms ease,
+    flex-direction 400ms ease,
+    padding 400ms ease,
+    gap 400ms ease,
+    width 400ms ease;
+}
+
+/* Portrait orientation */
+@media (orientation: portrait) {
+  .layout--orientation-aware {
+    flex-direction: column;
+  }
+}
+
+/* Landscape orientation */
+@media (orientation: landscape) and (max-width: 767px) {
+  .layout--orientation-aware {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* --- Responsive Visibility Utilities --- */
+
+/* Hide on mobile (below 768px) */
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop (768px and above) */
+@media (min-width: 768px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile */
+@media (min-width: 768px) {
+  .show-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Show only on desktop */
+@media (max-width: 767px) {
+  .show-desktop-only {
+    display: none !important;
+  }
+}
+
+/* --- Responsive Spacing Utilities --- */
+
+@media (max-width: 767px) {
+  .responsive-padding {
+    padding: var(--space-md, 16px);
+  }
+
+  .responsive-gap {
+    gap: var(--space-md, 16px);
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-padding {
+    padding: var(--space-lg, 24px);
+  }
+
+  .responsive-gap {
+    gap: var(--space-lg, 24px);
+  }
+}
+
+/* --- Responsive Typography --- */
+
+@media (max-width: 767px) {
+  .responsive-text {
+    font-size: var(--font-size-base, 18px);
+  }
+
+  .responsive-heading {
+    font-size: var(--font-size-2xl, 36px);
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-text {
+    font-size: var(--font-size-lg, 24px);
+  }
+
+  .responsive-heading {
+    font-size: var(--font-size-3xl, 48px);
+  }
+}
+
+/* --- Touch Target Sizing --- */
+/* Ensure interactive elements meet minimum touch target size */
+.touch-target {
+  min-width: var(--touch-target-min, 44px);
+  min-height: var(--touch-target-min, 44px);
+}
+
+/* --- Container Queries (Progressive Enhancement) --- */
+@supports (container-type: inline-size) {
+  .layout-container {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 767px) {
+    .container-single-column {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  @container (min-width: 768px) {
+    .container-multi-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
