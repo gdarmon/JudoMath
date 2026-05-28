@@ -1,11 +1,13 @@
-/* Player Profile - Child-friendly, Judo-themed */
+/* Player profile — calm, card-based, RTL. */
 
 .player-profile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
-  padding: 32px 16px;
+  gap: 24px;
+  padding: 28px 16px 36px;
+  min-height: 100svh;
+  background: var(--surface-soft);
 }
 
 /* Avatar section */
@@ -13,114 +15,110 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .player-profile__avatar {
   position: relative;
+  width: 144px;
+  height: 144px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--surface);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  border: 4px solid var(--c-cream-deep);
+}
+
+.player-profile__avatar-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(78, 205, 196, 0.28) 0%, transparent 70%);
+  pointer-events: none;
+  animation: profile-pulse 3s ease-in-out infinite;
+}
+
+@keyframes profile-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.7; }
+  50%      { transform: scale(1.08); opacity: 1;   }
 }
 
 .player-profile__avatar-icon {
-  font-size: 96px;
-  display: block;
-  animation: profile-bounce 2.5s ease-in-out infinite;
+  font-size: 84px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(26, 26, 46, 0.18));
+  animation: profile-bounce 3.5s ease-in-out infinite;
 }
 
 @keyframes profile-bounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.player-profile__belt-indicator {
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 8px;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  50%      { transform: translateY(-6px); }
 }
 
 .player-profile__belt-badge {
-  display: inline-block;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 8px 22px;
+  border-radius: var(--radius-pill);
+  font-size: 17px;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid rgba(0, 0, 0, 0.08);
 }
 
-/* Stripe progress section */
-.player-profile__stripes-section {
+/* Cards */
+.player-profile__card {
+  width: 100%;
+  max-width: 440px;
+  padding: 22px 20px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm), 0 4px 0 rgba(26, 26, 46, 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  width: 100%;
-  max-width: 320px;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-.player-profile__section-title {
-  font-size: 20px;
-  font-weight: 700;
+.player-profile__card-title {
   margin: 0;
-  color: #333;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--c-ink);
 }
 
 .player-profile__stripes-display {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  gap: 10px;
 }
 
 .player-profile__stripe {
-  width: 40px;
-  height: 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 44px;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--c-line);
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.player-profile__stripe--earned {
-  background: linear-gradient(135deg, #fdd835, #ffb300);
-  box-shadow: 0 2px 6px rgba(253, 216, 53, 0.4);
-  transform: scaleY(1.2);
-}
-
-.player-profile__stripe--empty {
-  background: #e0e0e0;
+.player-profile__stripe.is-earned {
+  background: linear-gradient(135deg, var(--c-sun), var(--c-sun-deep));
+  box-shadow: 0 0 8px rgba(255, 194, 51, 0.6);
+  transform: scaleY(1.15);
 }
 
 .player-profile__stripes-text {
-  font-size: 16px;
-  color: #555;
   margin: 0;
+  font-size: 16px;
+  color: var(--c-text-soft);
   text-align: center;
 }
 
 .player-profile__stripes-remaining {
-  color: #ff9800;
-  font-weight: 600;
+  color: var(--c-coral-deep);
+  font-weight: 700;
 }
 
-/* Stats section */
-.player-profile__stats-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 320px;
-}
-
+/* Stats grid */
 .player-profile__stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -133,108 +131,60 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 16px 12px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 14px 8px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--c-line);
 }
 
-.player-profile__stat-icon {
-  font-size: 28px;
-}
-
+.player-profile__stat-icon { font-size: 28px; line-height: 1; }
 .player-profile__stat-value {
+  font-family: var(--font-display);
   font-size: 28px;
-  font-weight: 700;
-  color: #333;
+  font-weight: 900;
+  color: var(--c-ink);
+  font-variant-numeric: tabular-nums;
 }
-
-.player-profile__stat-label {
-  font-size: 13px;
-  color: #777;
-  font-weight: 500;
-  text-align: center;
-}
+.player-profile__stat-label { font-size: 13px; color: var(--c-text-soft); font-weight: 600; }
 
 /* Back button */
 .player-profile__back-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  padding: 16px 32px;
+  padding: 14px 28px;
   border: none;
-  border-radius: 24px;
-  font-size: 20px;
-  font-weight: 600;
+  border-radius: var(--radius-pill);
+  font-size: 18px;
+  font-weight: 800;
+  font-family: inherit;
   cursor: pointer;
-  background: linear-gradient(135deg, #78909c, #90a4ae);
+  background: var(--c-ink);
   color: #ffffff;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  min-height: 56px;
-  margin-top: 8px;
+  box-shadow: var(--shadow-sm), 0 4px 0 rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease;
 }
 
-.player-profile__back-button:hover {
-  transform: scale(1.04);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.player-profile__back-button:active {
-  transform: scale(0.96);
-}
-
+.player-profile__back-button:hover { transform: translateY(-2px); }
+.player-profile__back-button:active { transform: translateY(1px); }
 .player-profile__back-button:focus-visible {
-  outline: 3px solid #333;
-  outline-offset: 3px;
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-sm);
 }
 
-.player-profile__back-icon {
-  font-size: 24px;
-  line-height: 1;
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.player-profile__back-label {
-  font-size: 20px;
-}
-
-/* Responsive adjustments */
 @media (max-width: 767px) {
-  .player-profile__avatar-icon {
-    font-size: 72px;
-  }
-
-  .player-profile__belt-indicator {
-    width: 48px;
-    height: 6px;
-  }
-
-  .player-profile__belt-badge {
-    font-size: 16px;
-  }
-
-  .player-profile__stat-value {
-    font-size: 24px;
-  }
-}
-
-@media (min-width: 768px) {
-  .player-profile {
-    gap: 36px;
-    padding: 48px 32px;
-  }
-
-  .player-profile__stripes-section,
-  .player-profile__stats-section {
-    max-width: 400px;
-  }
-
-  .player-profile__stats-grid {
-    gap: 16px;
-  }
-
-  .player-profile__stat-card {
-    padding: 20px 16px;
-  }
+  .player-profile__avatar { width: 124px; height: 124px; }
+  .player-profile__avatar-icon { font-size: 70px; }
+  .player-profile__belt-badge { font-size: 15px; padding: 6px 18px; }
+  .player-profile__stripe { width: 36px; height: 10px; }
 }

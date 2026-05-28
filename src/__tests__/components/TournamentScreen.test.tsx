@@ -3,6 +3,7 @@ import type { Mock } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { TournamentScreen } from '../../components/TournamentScreen'
 import type { TournamentResult } from '../../types'
+import { TOURNAMENT } from '../../i18n/he'
 
 describe('TournamentScreen', () => {
   let onComplete: Mock<(result: TournamentResult) => void>
@@ -18,19 +19,19 @@ describe('TournamentScreen', () => {
     vi.useRealTimers()
   })
 
-  it('renders session indicator showing "Session 1/3" initially', () => {
+  it('renders session indicator showing 1/3 initially', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
-    expect(screen.getByText('Session 1/3')).toBeTruthy()
+    expect(screen.getByText('1/3')).toBeTruthy()
   })
 
-  it('renders problem counter showing "Problem 1/10" initially', () => {
+  it('renders problem counter showing the i18n label', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
-    expect(screen.getByText('Problem 1/10')).toBeTruthy()
+    expect(screen.getByText(TOURNAMENT.problemLabel(1, 10))).toBeTruthy()
   })
 
-  it('displays a timer that starts at 0.0s', () => {
+  it('displays a timer that starts at 0.0', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
-    expect(screen.getByText('0.0s')).toBeTruthy()
+    expect(screen.getByText(TOURNAMENT.timerSeconds(0))).toBeTruthy()
   })
 
   it('timer increments as time passes', () => {
@@ -38,50 +39,42 @@ describe('TournamentScreen', () => {
     act(() => {
       vi.advanceTimersByTime(1500)
     })
-    // After 1.5 seconds, timer should show approximately 1.5s
-    expect(screen.getByText('1.5s')).toBeTruthy()
+    expect(screen.getByText(TOURNAMENT.timerSeconds(1.5))).toBeTruthy()
   })
 
   it('calls onBack when back button is clicked', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
-    const backBtn = screen.getByLabelText('Back to menu')
+    const backBtn = screen.getByLabelText(TOURNAMENT.backAria)
     fireEvent.click(backBtn)
     expect(onBack).toHaveBeenCalledOnce()
   })
 
   it('displays a math problem with operands and operator', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
-    // The ProblemDisplay should render with a "?" placeholder for the answer
     expect(screen.getByText('?')).toBeTruthy()
-    // Should also have the equals sign
     expect(screen.getByText('=')).toBeTruthy()
   })
 
   it('advances problem counter after submitting an answer', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
 
-    // Submit an answer via keyboard
     fireEvent.keyDown(window, { key: '5' })
     fireEvent.keyDown(window, { key: 'Enter' })
 
-    // Wait for feedback duration
     act(() => {
       vi.advanceTimersByTime(1100)
     })
 
-    expect(screen.getByText('Problem 2/10')).toBeTruthy()
+    expect(screen.getByText(TOURNAMENT.problemLabel(2, 10))).toBeTruthy()
   })
 
   it('completes all 3 sessions and calls onComplete with a TournamentResult', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
 
-    // Complete 3 sessions × 10 problems = 30 answers
     for (let session = 0; session < 3; session++) {
       for (let problem = 0; problem < 10; problem++) {
-        // Submit answer "5" for each problem (may be right or wrong, doesn't matter for structure test)
         fireEvent.keyDown(window, { key: '5' })
         fireEvent.keyDown(window, { key: 'Enter' })
-
         act(() => {
           vi.advanceTimersByTime(1100)
         })
@@ -96,36 +89,32 @@ describe('TournamentScreen', () => {
     expect(result.sessionsCompleted).toBe(3)
   })
 
-  it('shows "Session 2/3" after completing the first session', () => {
+  it('shows session 2/3 after completing the first session', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
 
-    // Complete first session (10 problems)
     for (let problem = 0; problem < 10; problem++) {
       fireEvent.keyDown(window, { key: '5' })
       fireEvent.keyDown(window, { key: 'Enter' })
-
       act(() => {
         vi.advanceTimersByTime(1100)
       })
     }
 
-    expect(screen.getByText('Session 2/3')).toBeTruthy()
+    expect(screen.getByText('2/3')).toBeTruthy()
   })
 
-  it('resets problem counter to "Problem 1/10" when starting a new session', () => {
+  it('resets problem counter when starting a new session', () => {
     render(<TournamentScreen onComplete={onComplete} onBack={onBack} />)
 
-    // Complete first session (10 problems)
     for (let problem = 0; problem < 10; problem++) {
       fireEvent.keyDown(window, { key: '5' })
       fireEvent.keyDown(window, { key: 'Enter' })
-
       act(() => {
         vi.advanceTimersByTime(1100)
       })
     }
 
-    expect(screen.getByText('Problem 1/10')).toBeTruthy()
+    expect(screen.getByText(TOURNAMENT.problemLabel(1, 10))).toBeTruthy()
   })
 
   it('has accessible progress bar', () => {

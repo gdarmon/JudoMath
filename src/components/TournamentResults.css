@@ -1,15 +1,16 @@
-/* Tournament Results - Child-friendly celebration screen */
+/* Tournament results — same calm celebration palette. */
 
 .tournament-results {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 32px 16px;
+  gap: 22px;
+  padding: 32px 16px 40px;
   text-align: center;
+  min-height: 100svh;
+  background: var(--surface-soft);
 }
 
-/* Header with emoji and message */
 .tournament-results__header {
   display: flex;
   flex-direction: column;
@@ -18,51 +19,45 @@
 }
 
 .tournament-results__header--celebrate .tournament-results__emoji {
-  animation: tournament-celebrate-bounce 1s ease-in-out infinite;
+  animation: tournament-bounce 1.2s ease-in-out infinite;
 }
 
-@keyframes tournament-celebrate-bounce {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.1) rotate(-5deg); }
-  50% { transform: scale(1.2) rotate(0deg); }
-  75% { transform: scale(1.1) rotate(5deg); }
+@keyframes tournament-bounce {
+  0%, 100% { transform: scale(1)    rotate(0deg); }
+  50%      { transform: scale(1.15) rotate(0deg); }
 }
 
-.tournament-results__emoji {
-  font-size: 64px;
-  display: block;
-  line-height: 1;
-}
-
+.tournament-results__emoji { font-size: 64px; line-height: 1; }
 .tournament-results__message {
+  font-family: var(--font-display);
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 900;
   margin: 0;
-  color: #333;
+  color: var(--c-ink);
 }
 
-/* Score display */
 .tournament-results__score {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 150px;
-  height: 150px;
+  width: 156px;
+  height: 156px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff6b6b, #ffa500);
-  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+  background: linear-gradient(135deg, var(--c-sun), var(--c-coral));
+  box-shadow: 0 12px 30px rgba(255, 107, 107, 0.3);
 }
 
 .tournament-results__score-value {
+  font-family: var(--font-display);
   font-size: 48px;
-  font-weight: 700;
+  font-weight: 900;
   color: #ffffff;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Stats section */
 .tournament-results__stats {
   display: flex;
-  gap: 24px;
+  gap: 14px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -72,39 +67,35 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 16px 24px;
-  border-radius: 16px;
-  background: #f5f5f5;
+  padding: 16px 22px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
   min-width: 120px;
 }
 
-.tournament-results__stat-icon {
-  font-size: 28px;
-  line-height: 1;
-}
-
+.tournament-results__stat-icon { font-size: 26px; line-height: 1; }
 .tournament-results__stat-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #888;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-text-soft);
   letter-spacing: 0.5px;
 }
-
 .tournament-results__stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: #333;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--c-ink);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Action buttons */
 .tournament-results__actions {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  max-width: 320px;
-  margin-top: 16px;
+  max-width: 360px;
+  margin-top: 8px;
 }
 
 .tournament-results__button {
@@ -112,95 +103,44 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 20px 32px;
+  padding: 18px 24px;
   border: none;
-  border-radius: 24px;
-  font-size: 24px;
-  font-weight: 600;
+  border-radius: var(--radius-lg);
+  font-size: 22px;
+  font-weight: 800;
+  font-family: inherit;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  min-height: 72px;
+  box-shadow: var(--shadow-sm), var(--shadow-pop);
+  transition: transform 0.15s ease, box-shadow 0.18s ease;
+  min-height: 64px;
 }
 
 .tournament-results__button:hover {
-  transform: scale(1.04);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md), 0 8px 0 rgba(26, 26, 46, 0.12);
 }
-
 .tournament-results__button:active {
-  transform: scale(0.96);
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm), 0 2px 0 rgba(26, 26, 46, 0.12);
 }
-
 .tournament-results__button:focus-visible {
-  outline: 3px solid #333;
-  outline-offset: 3px;
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-sm);
 }
 
 .tournament-results__button--play-again {
-  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+  background: linear-gradient(135deg, var(--c-coral), var(--c-coral-deep));
   color: #ffffff;
 }
-
 .tournament-results__button--main-menu {
-  background: linear-gradient(135deg, #2196f3, #64b5f6);
-  color: #ffffff;
+  background: var(--surface);
+  color: var(--c-ink);
 }
 
-.tournament-results__button-icon {
-  font-size: 32px;
-  line-height: 1;
-}
-
-.tournament-results__button-label {
-  font-size: 24px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 767px) {
-  .tournament-results__emoji {
-    font-size: 48px;
-  }
-
-  .tournament-results__message {
-    font-size: 26px;
-  }
-
-  .tournament-results__score {
-    width: 120px;
-    height: 120px;
-  }
-
-  .tournament-results__score-value {
-    font-size: 40px;
-  }
-
-  .tournament-results__stat-value {
-    font-size: 24px;
-  }
-
-  .tournament-results__button {
-    padding: 16px 24px;
-    min-height: 64px;
-  }
-
-  .tournament-results__button-icon {
-    font-size: 28px;
-  }
-
-  .tournament-results__button-label {
-    font-size: 20px;
-  }
-}
+.tournament-results__button-icon { font-size: 28px; line-height: 1; }
+.tournament-results__button-label { font-size: 22px; }
 
 @media (min-width: 768px) {
-  .tournament-results__actions {
-    flex-direction: row;
-    max-width: 500px;
-    gap: 20px;
-  }
-
-  .tournament-results__button {
-    flex: 1;
-  }
+  .tournament-results__actions { flex-direction: row; max-width: 540px; gap: 16px; }
+  .tournament-results__button { flex: 1; }
 }

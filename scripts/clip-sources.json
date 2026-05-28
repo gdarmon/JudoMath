@@ -1,0 +1,31 @@
+{
+  "$comment": "Configures which YouTube channels and playlists are pulled into src/data/judoClips.ts. Each entry uses one of three forms: channelHandle (e.g. '@JudoTV'), channelId (UC...), or playlistId (PL...). Add or remove entries to curate the pool. The fetch script (scripts/fetch-judo-clips.mjs) calls the YouTube Data API and filters to embeddable, kid-appropriate videos.",
+
+  "targetCount": 100,
+  "minDurationSeconds": 30,
+  "maxDurationSeconds": 900,
+
+  "titleMustContain": ["judo"],
+  "titleMustNotContain": [
+    "injury",
+    "broken",
+    "knockout",
+    "ko ",
+    "blood",
+    "fight",
+    "diss",
+    "drama",
+    "shocking",
+    "fail",
+    "compilation fails",
+    "scandal"
+  ],
+
+  "sources": [
+    { "type": "channelHandle", "value": "@JudoTV", "label": "IJF JudoTV (official)" },
+    { "type": "channelHandle", "value": "@JudoChannel", "label": "International Judo Federation" },
+    { "type": "channelHandle", "value": "@olympics", "label": "Olympics (judo only)" },
+    { "type": "channelHandle", "value": "@JudoFanatics", "label": "Judo Fanatics (instructional)" },
+    { "type": "channelHandle", "value": "@KodokanInstituteofJudo", "label": "Kodokan Institute of Judo" }
+  ]
+}

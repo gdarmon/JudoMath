@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { MathProblem } from '../types'
 import { generateChoices } from '../logic/distractors'
+import { CHOICES } from '../i18n/he'
 import './AnswerChoices.css'
 
 export interface AnswerChoicesProps {
@@ -14,10 +15,8 @@ export interface AnswerChoicesProps {
 }
 
 /**
- * Six big touch-friendly buttons. One is the correct answer; the
- * other five are plausible distractors generated deterministically
- * from the problem id, so they never reshuffle while the child is
- * looking at the same question.
+ * Six big touch-friendly buttons. Deterministic shuffle per problem id
+ * so the buttons don't reshuffle as the child looks at them.
  */
 export function AnswerChoices({
   problem,
@@ -28,7 +27,6 @@ export function AnswerChoices({
 }: AnswerChoicesProps) {
   const choices = useMemo(() => generateChoices(problem), [problem])
 
-  // Track keyboard focus index for arrow-key navigation.
   const [focusIdx, setFocusIdx] = useState(0)
   useEffect(() => setFocusIdx(0), [problem.id])
 
@@ -36,9 +34,12 @@ export function AnswerChoices({
     if (disabled) return
     const cols = 3
     let next = focusIdx
+    // RTL: ArrowRight should move toward smaller index visually,
+    //      ArrowLeft toward larger. We swap to keep the keyboard
+    //      experience consistent with the visual grid.
     switch (e.key) {
-      case 'ArrowRight': next = (focusIdx + 1) % choices.length; break
-      case 'ArrowLeft':  next = (focusIdx - 1 + choices.length) % choices.length; break
+      case 'ArrowRight': next = (focusIdx - 1 + choices.length) % choices.length; break
+      case 'ArrowLeft':  next = (focusIdx + 1) % choices.length; break
       case 'ArrowDown':  next = Math.min(focusIdx + cols, choices.length - 1); break
       case 'ArrowUp':    next = Math.max(focusIdx - cols, 0); break
       default: return
@@ -55,7 +56,7 @@ export function AnswerChoices({
     <div
       className="answer-choices"
       role="group"
-      aria-label="Answer choices"
+      aria-label={CHOICES.groupLabel}
       onKeyDown={handleKeyNav}
     >
       {choices.map((value, idx) => {
@@ -66,6 +67,7 @@ export function AnswerChoices({
 
         const className = [
           'answer-choices__btn',
+          'is-ltr',
           reveal && 'answer-choices__btn--correct',
           wrong && 'answer-choices__btn--wrong',
           isSelected && !showCorrect && 'answer-choices__btn--selected',
@@ -81,7 +83,7 @@ export function AnswerChoices({
             className={className}
             onClick={() => onSelect(value)}
             disabled={disabled}
-            aria-label={`Answer ${value}`}
+            aria-label={CHOICES.answerAria(value)}
             aria-pressed={isSelected}
           >
             {value}

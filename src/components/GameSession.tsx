@@ -5,6 +5,8 @@ import { generateSession, validateAnswer } from '../logic/problemGenerator'
 import { pickNextClip, pickFallbackClip } from '../logic/clipRotation'
 import { JUDO_CLIPS, CLIP_DURATION_SECONDS } from '../data/judoClips'
 import type { JudoClip } from '../data/judoClips'
+import { getBeltColor } from '../logic/beltColors'
+import { GAME, BELT_NAMES } from '../i18n/he'
 import { ProblemDisplay } from './ProblemDisplay'
 import { AnswerChoices } from './AnswerChoices'
 import { RewardClip } from './RewardClip'
@@ -21,29 +23,9 @@ const PROBLEMS_PER_SESSION = 10
 const FEEDBACK_DURATION_MS = 900
 const INACTIVITY_TIMEOUT_MS = 30000
 
-const BELT_NAMES: Record<Belt, string> = {
-  [Belt.White]: 'White',
-  [Belt.Yellow]: 'Yellow',
-  [Belt.Orange]: 'Orange',
-  [Belt.Green]: 'Green',
-  [Belt.Blue]: 'Blue',
-  [Belt.Brown]: 'Brown',
-  [Belt.Black]: 'Black',
-}
-
-const BELT_COLORS: Record<Belt, string> = {
-  [Belt.White]: '#f5f5f5',
-  [Belt.Yellow]: '#fdd835',
-  [Belt.Orange]: '#ff9800',
-  [Belt.Green]: '#4caf50',
-  [Belt.Blue]: '#2196f3',
-  [Belt.Brown]: '#795548',
-  [Belt.Black]: '#212121',
-}
-
 const BELT_TEXT_COLORS: Record<Belt, string> = {
-  [Belt.White]: '#333333',
-  [Belt.Yellow]: '#333333',
+  [Belt.White]: '#2d2a33',
+  [Belt.Yellow]: '#2d2a33',
   [Belt.Orange]: '#ffffff',
   [Belt.Green]: '#ffffff',
   [Belt.Blue]: '#ffffff',
@@ -51,11 +33,18 @@ const BELT_TEXT_COLORS: Record<Belt, string> = {
   [Belt.Black]: '#ffffff',
 }
 
-export function GameSession({ onComplete, onBack, currentBelt, currentStripes }: GameSessionProps) {
+export function GameSession({
+  onComplete,
+  onBack,
+  currentBelt,
+  currentStripes,
+}: GameSessionProps) {
   const beltValue = currentBelt ?? Belt.White
   const stripes = currentStripes ?? 0
 
-  const [problems] = useState<MathProblem[]>(() => generateSession({ count: PROBLEMS_PER_SESSION }))
+  const [problems] = useState<MathProblem[]>(() =>
+    generateSession({ count: PROBLEMS_PER_SESSION }),
+  )
   const [currentIndex, setCurrentIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null)
@@ -121,10 +110,8 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
         setFeedback('correct')
         setShowCorrectAnswer(false)
 
-        // Queue the reward clip after the brief feedback flash.
         feedbackTimerRef.current = setTimeout(() => {
           const clip = pickNextClip(JUDO_CLIPS)
-          // Stash the next-step action — runs when the reward clip closes.
           pendingNextRef.current = () => advanceOrFinish(correctCount + 1)
           setReward(clip)
         }, FEEDBACK_DURATION_MS)
@@ -134,7 +121,7 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
 
         feedbackTimerRef.current = setTimeout(() => {
           advanceOrFinish(correctCount)
-        }, FEEDBACK_DURATION_MS + 600) // Slightly longer so the kid sees the right answer.
+        }, FEEDBACK_DURATION_MS + 600)
       }
     },
     [advanceOrFinish, correctCount, currentProblem, inputDisabled, resetInactivityTimer],
@@ -148,17 +135,18 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
     if (next) next()
   }, [])
 
-  /** If a clip fails to embed, swap to a different one without disrupting the flow. */
-  const handleRewardError = useCallback((failedYoutubeId: string) => {
-    failedClipsRef.current.add(failedYoutubeId)
-    const fallback = pickFallbackClip(JUDO_CLIPS, failedClipsRef.current)
-    if (fallback) {
-      setReward(fallback)
-    } else {
-      // Out of clips — just close and continue.
-      handleRewardClose()
-    }
-  }, [handleRewardClose])
+  const handleRewardError = useCallback(
+    (failedYoutubeId: string) => {
+      failedClipsRef.current.add(failedYoutubeId)
+      const fallback = pickFallbackClip(JUDO_CLIPS, failedClipsRef.current)
+      if (fallback) {
+        setReward(fallback)
+      } else {
+        handleRewardClose()
+      }
+    },
+    [handleRewardClose],
+  )
 
   const progressPercent = (currentIndex / PROBLEMS_PER_SESSION) * 100
 
@@ -168,32 +156,34 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
         <button
           className="game-session__back-btn"
           onClick={onBack}
-          aria-label="Back to menu"
+          aria-label={GAME.back}
           type="button"
         >
-          ← Back
+          <span aria-hidden="true">→</span> {GAME.backShort}
         </button>
 
         <div className="game-session__progress-info">
           <span
-            className="game-session__problem-counter"
-            aria-label={`Problem ${currentIndex + 1} of ${PROBLEMS_PER_SESSION}`}
+            className="game-session__problem-counter is-ltr"
+            aria-label={GAME.questionOf(currentIndex + 1, PROBLEMS_PER_SESSION)}
           >
-            {currentIndex + 1}/{PROBLEMS_PER_SESSION}
+            {GAME.questionShort(currentIndex + 1, PROBLEMS_PER_SESSION)}
           </span>
         </div>
 
         <div
           className="game-session__belt-indicator"
           style={{
-            backgroundColor: BELT_COLORS[beltValue],
+            backgroundColor: getBeltColor(beltValue),
             color: BELT_TEXT_COLORS[beltValue],
           }}
-          aria-label={`${BELT_NAMES[beltValue]} belt with ${stripes} stripe${stripes !== 1 ? 's' : ''}`}
+          aria-label={`חגורה ${BELT_NAMES[beltValue]}, ${stripes} פסים`}
         >
           <span className="game-session__belt-name">{BELT_NAMES[beltValue]}</span>
           {stripes > 0 && (
-            <span className="game-session__belt-stripes">{'⫼'.repeat(stripes)}</span>
+            <span className="game-session__belt-stripes" aria-hidden="true">
+              {'⫼'.repeat(stripes)}
+            </span>
           )}
         </div>
       </header>
@@ -212,9 +202,12 @@ export function GameSession({ onComplete, onBack, currentBelt, currentStripes }:
       </div>
 
       {isInactive && (
-        <div className="game-session__reminder" aria-live="polite">
-          <span className="game-session__reminder-icon" role="img" aria-label="Reminder">👋</span>
-          <span className="game-session__reminder-text">!עדיין כאן? בוא נמשיך</span>
+        <div
+          className="game-session__reminder"
+          role="status"
+          aria-label={GAME.inactiveAriaLabel}
+        >
+          {GAME.reminder}
         </div>
       )}
 

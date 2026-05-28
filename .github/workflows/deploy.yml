@@ -32,6 +32,9 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Generate raster icons (PNG) for PWA / TWA
+        run: npm run twa:icons
+
       - name: Build
         run: npm run build
         env:

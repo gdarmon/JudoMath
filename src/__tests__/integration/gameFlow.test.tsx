@@ -5,6 +5,17 @@ import { useGameStore } from '../../store/gameStore'
 import { OfflineCache } from '../../persistence/offlineCache'
 import { Belt } from '../../types'
 import type { PlayerProgress } from '../../types'
+import {
+  MENU,
+  REWARD,
+  CHOICES,
+  RESULTS,
+  TOURNAMENT,
+  TOURNAMENT_RESULTS,
+  CEREMONY,
+  beltLabel,
+  NUMPAD,
+} from '../../i18n/he'
 
 // Mock lottie-react to avoid canvas dependency in jsdom.
 vi.mock('lottie-react', () => ({
@@ -36,11 +47,8 @@ vi.mock('../../persistence/offlineCache', async (importOriginal) => {
 import App from '../../App'
 import { offlineCache } from '../../persistence/offlineCache'
 
-/**
- * Helpers
- */
+/* Helpers */
 
-/** Reads the currently displayed problem and returns the correct answer. */
 function readCurrentCorrectAnswer(): number {
   const operands = document.querySelectorAll('.problem-display__operand')
   const operatorEl = document.querySelector('.problem-display__operator')
@@ -50,23 +58,18 @@ function readCurrentCorrectAnswer(): number {
   return operator === '+' ? op1 + op2 : op1 - op2
 }
 
-/** Picks an answer choice in the multiple-choice pad (game session flow). */
 function pickAnswerChoice(value: number) {
-  const btn = screen.getByLabelText(`Answer ${value}`)
-  fireEvent.click(btn)
+  fireEvent.click(screen.getByLabelText(CHOICES.answerAria(value)))
 }
 
-/** Skip the reward clip overlay if it's currently shown. */
 function skipRewardIfPresent() {
-  const skip = screen.queryByLabelText('Skip clip and continue')
+  const skip = screen.queryByLabelText(REWARD.skipAria)
   if (skip) fireEvent.click(skip)
 }
 
-/** Submit a single answer in the game session: pick choice, advance feedback, skip reward if any. */
 async function answerOne(correctAnswer: number, deliberatelyWrong = false) {
   if (deliberatelyWrong) {
-    // Pick the first visible choice that isn't the correct answer.
-    const choiceButtons = screen.getAllByRole('button', { name: /^Answer / })
+    const choiceButtons = screen.getAllByRole('button', { name: /^תשובה / })
     const wrong = choiceButtons.find(
       (b) => b.textContent && parseInt(b.textContent, 10) !== correctAnswer,
     )
@@ -75,26 +78,21 @@ async function answerOne(correctAnswer: number, deliberatelyWrong = false) {
     pickAnswerChoice(correctAnswer)
   }
 
-  // Advance past the brief feedback flash.
   await act(async () => {
     vi.advanceTimersByTime(1500)
   })
 
-  // If a reward overlay appeared (only on correct answers), skip it.
   skipRewardIfPresent()
 
-  // Let the close handler run.
   await act(async () => {
     vi.advanceTimersByTime(50)
   })
 }
 
-/** Tournament screen still uses the keyboard-driven number input. */
 function submitNumericAnswer(answer: number) {
   const digits = answer.toString().split('')
   for (const digit of digits) fireEvent.keyDown(window, { key: digit })
-  const submitBtn = screen.getByLabelText('Submit answer')
-  fireEvent.click(submitBtn)
+  fireEvent.click(screen.getByLabelText(NUMPAD.submitAria))
 }
 
 async function tickTournament(ms = 1100) {
@@ -131,56 +129,49 @@ describe('Integration: Full Game Session Flow', () => {
     render(<App />)
     await initApp()
 
-    expect(screen.getByLabelText('Play')).toBeInTheDocument()
-    fireEvent.click(screen.getByLabelText('Play'))
+    expect(screen.getByLabelText(MENU.play)).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText(MENU.play))
 
     expect(screen.getByText('1/10')).toBeInTheDocument()
 
-    // Answer all 10 problems wrong (skips reward overlays). We just need to drive the flow.
     for (let i = 0; i < 10; i++) {
       const correct = readCurrentCorrectAnswer()
-      // Already on results screen if previous loop completed early.
       if (!screen.queryByText(/^\d+\/10$/)) break
       await answerOne(correct, /* deliberatelyWrong */ true)
     }
 
-    // Should now see the results screen with score percentage.
-    expect(screen.getByLabelText(/Score:/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/correct/)).toBeInTheDocument()
-    expect(screen.getByLabelText('Play Again')).toBeInTheDocument()
-    expect(screen.getByLabelText('Main Menu')).toBeInTheDocument()
+    expect(screen.getByLabelText(/הציון שלך:/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/נכונות מתוך/)).toBeInTheDocument()
+    expect(screen.getByLabelText(RESULTS.playAgain)).toBeInTheDocument()
+    expect(screen.getByLabelText(RESULTS.mainMenu)).toBeInTheDocument()
 
-    fireEvent.click(screen.getByLabelText('Main Menu'))
-    expect(screen.getByLabelText('Play')).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText(RESULTS.mainMenu))
+    expect(screen.getByLabelText(MENU.play)).toBeInTheDocument()
   })
 
   it('shows the reward clip after a correct answer and resumes the game on skip', async () => {
     render(<App />)
     await initApp()
 
-    fireEvent.click(screen.getByLabelText('Play'))
+    fireEvent.click(screen.getByLabelText(MENU.play))
     expect(screen.getByText('1/10')).toBeInTheDocument()
 
     const correct = readCurrentCorrectAnswer()
     pickAnswerChoice(correct)
 
-    // Advance past the brief correct-feedback flash.
     await act(async () => {
       vi.advanceTimersByTime(1000)
     })
 
-    // Reward overlay is up.
-    expect(screen.getByRole('dialog', { name: 'Prize clip' })).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: REWARD.dialogAria })).toBeInTheDocument()
 
-    // Skip the clip.
-    fireEvent.click(screen.getByLabelText('Skip clip and continue'))
+    fireEvent.click(screen.getByLabelText(REWARD.skipAria))
     await act(async () => {
       vi.advanceTimersByTime(50)
     })
 
-    // We should now be on problem 2.
     expect(screen.getByText('2/10')).toBeInTheDocument()
-    expect(screen.queryByRole('dialog', { name: 'Prize clip' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: REWARD.dialogAria })).not.toBeInTheDocument()
   })
 })
 
@@ -219,21 +210,21 @@ describe('Integration: Belt Promotion Flow', () => {
     render(<App />)
     await initApp()
 
-    fireEvent.click(screen.getByLabelText('Play'))
+    fireEvent.click(screen.getByLabelText(MENU.play))
     expect(screen.getByText('1/10')).toBeInTheDocument()
 
-    // Answer all 10 correctly, skipping the reward clip each time.
     for (let i = 0; i < 10; i++) {
       const correct = readCurrentCorrectAnswer()
       await answerOne(correct, /* deliberatelyWrong */ false)
     }
 
-    // After 100% score with 2 stripes -> promotion. Belt ceremony dialog should appear.
-    expect(screen.getByRole('dialog', { name: /Belt ceremony/i })).toBeInTheDocument()
-    expect(screen.getByText(/Yellow Belt/)).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: CEREMONY.dialogAria(Belt.Yellow) })).toBeInTheDocument()
+    expect(screen.getByText(beltLabel(Belt.Yellow))).toBeInTheDocument()
 
-    fireEvent.click(screen.getByLabelText('Continue playing'))
-    expect(screen.queryByRole('dialog', { name: /Belt ceremony/i })).not.toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText(CEREMONY.continue))
+    expect(
+      screen.queryByRole('dialog', { name: CEREMONY.dialogAria(Belt.Yellow) }),
+    ).not.toBeInTheDocument()
 
     const updated = useGameStore.getState().player
     expect(updated?.currentBelt).toBe(Belt.Yellow)
@@ -269,10 +260,10 @@ describe('Integration: Tournament Flow', () => {
     render(<App />)
     await initApp()
 
-    fireEvent.click(screen.getByLabelText('Tournament'))
-    expect(screen.getByText(/Session 1\/3/)).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText(MENU.tournament))
+    expect(screen.getByText('1/3')).toBeInTheDocument()
+    expect(screen.getByText(TOURNAMENT.problemLabel(1, 10))).toBeInTheDocument()
 
-    // Tournament keeps the keyboard number input — submit `0` for each problem.
     for (let session = 0; session < 3; session++) {
       for (let problem = 0; problem < 10; problem++) {
         submitNumericAnswer(0)
@@ -280,10 +271,14 @@ describe('Integration: Tournament Flow', () => {
       }
     }
 
-    expect(screen.getByLabelText('Tournament results')).toBeInTheDocument()
-    expect(screen.getByLabelText(/Total score:/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/3 of 3 sessions completed/)).toBeInTheDocument()
-    expect(screen.getByLabelText('Main Menu')).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(TOURNAMENT_RESULTS.regionLabel),
+    ).toBeInTheDocument()
+    expect(screen.getByLabelText(/ציון כללי:/)).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(TOURNAMENT_RESULTS.sessionsAria(3, 3)),
+    ).toBeInTheDocument()
+    expect(screen.getByLabelText(TOURNAMENT_RESULTS.mainMenu)).toBeInTheDocument()
   })
 })
 

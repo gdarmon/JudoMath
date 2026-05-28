@@ -1,0 +1,41 @@
+{
+  "$comment": "Bubblewrap configuration for wrapping the Judo Math PWA into an Android Trusted Web Activity (TWA). Update `host` and `startUrl` once you point a custom domain at GitHub Pages — TWAs need /.well-known/assetlinks.json at the host root, which github.io won't serve for sub-projects.",
+  "packageId": "io.github.gdarmon.judomath",
+  "host": "gdarmon.github.io",
+  "name": "Judo Math",
+  "launcherName": "Judo Math",
+  "display": "standalone",
+  "themeColor": "#863bff",
+  "themeColorDark": "#1a1330",
+  "navigationColor": "#863bff",
+  "navigationColorDark": "#1a1330",
+  "navigationDividerColor": "#863bff",
+  "navigationDividerColorDark": "#1a1330",
+  "backgroundColor": "#ffffff",
+  "enableNotifications": false,
+  "startUrl": "/JudoMath/",
+  "iconUrl": "https://gdarmon.github.io/JudoMath/icon-512.png",
+  "maskableIconUrl": "https://gdarmon.github.io/JudoMath/icon-512-maskable.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://gdarmon.github.io/JudoMath/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": { "enabled": false },
+    "playBilling": { "enabled": false }
+  },
+  "alphaDependencies": { "enabled": false },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://gdarmon.github.io/JudoMath/",
+  "minSdkVersion": 26,
+  "orientation": "default"
+}

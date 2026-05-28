@@ -1,0 +1,13 @@
+[
+  {
+    "$comment": "PLACEHOLDER. After running `bubblewrap init`, replace SHA256_FINGERPRINT below with the value Bubblewrap prints (and the same value you'll find at android-app/app/twa-keystore-info.json after init). For Play Store distribution, replace with the App Signing Key fingerprint Google provides under Setup > App integrity > App signing.",
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.gdarmon.judomath",
+      "sha256_cert_fingerprints": [
+        "REPLACE_WITH_YOUR_APP_SIGNING_SHA256_FINGERPRINT"
+      ]
+    }
+  }
+]

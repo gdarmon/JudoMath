@@ -1,7 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { Leaderboard } from '../../components/Leaderboard';
-import type { LeaderboardEntry } from '../../types';
+import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { Leaderboard } from '../../components/Leaderboard'
+import type { LeaderboardEntry } from '../../types'
+import { LEADERBOARD } from '../../i18n/he'
 
 describe('Leaderboard', () => {
   const mockEntries: LeaderboardEntry[] = [
@@ -10,51 +11,51 @@ describe('Leaderboard', () => {
     { playerId: '3', playerName: 'Charlie', totalScore: 85, totalTime: 80000, date: '2024-01-03' },
     { playerId: '4', playerName: 'Diana', totalScore: 80, totalTime: 90000, date: '2024-01-04' },
     { playerId: '5', playerName: 'Eve', totalScore: 75, totalTime: 95000, date: '2024-01-05' },
-  ];
+  ]
 
   it('renders the leaderboard region', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    expect(screen.getByRole('region', { name: 'Leaderboard' })).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={mockEntries} />)
+    expect(screen.getByRole('region', { name: LEADERBOARD.ariaLabel })).toBeInTheDocument()
+  })
 
   it('displays the leaderboard title', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    expect(screen.getByText('Leaderboard')).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={mockEntries} />)
+    expect(screen.getAllByText(LEADERBOARD.title).length).toBeGreaterThan(0)
+  })
 
   it('displays all entries in a ranked list', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    expect(screen.getByText('Alice')).toBeInTheDocument();
-    expect(screen.getByText('Bob')).toBeInTheDocument();
-    expect(screen.getByText('Charlie')).toBeInTheDocument();
-    expect(screen.getByText('Diana')).toBeInTheDocument();
-    expect(screen.getByText('Eve')).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={mockEntries} />)
+    expect(screen.getByText('Alice')).toBeInTheDocument()
+    expect(screen.getByText('Bob')).toBeInTheDocument()
+    expect(screen.getByText('Charlie')).toBeInTheDocument()
+    expect(screen.getByText('Diana')).toBeInTheDocument()
+    expect(screen.getByText('Eve')).toBeInTheDocument()
+  })
 
   it('shows scores as percentages', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    expect(screen.getByText('95%')).toBeInTheDocument();
-    expect(screen.getByText('90%')).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={mockEntries} />)
+    expect(screen.getByText('95%')).toBeInTheDocument()
+    expect(screen.getByText('90%')).toBeInTheDocument()
+  })
 
   it('shows formatted times', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    expect(screen.getByText('01:00')).toBeInTheDocument(); // 60000ms
-    expect(screen.getByText('01:15')).toBeInTheDocument(); // 75000ms
-  });
+    render(<Leaderboard entries={mockEntries} />)
+    expect(screen.getByText('01:00')).toBeInTheDocument()
+    expect(screen.getByText('01:15')).toBeInTheDocument()
+  })
 
   it('shows medal emojis for top 3', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    expect(screen.getByText('🥇')).toBeInTheDocument();
-    expect(screen.getByText('🥈')).toBeInTheDocument();
-    expect(screen.getByText('🥉')).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={mockEntries} />)
+    expect(screen.getByText('🥇')).toBeInTheDocument()
+    expect(screen.getByText('🥈')).toBeInTheDocument()
+    expect(screen.getByText('🥉')).toBeInTheDocument()
+  })
 
   it('shows numeric rank for entries beyond top 3', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    expect(screen.getByText('4')).toBeInTheDocument();
-    expect(screen.getByText('5')).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={mockEntries} />)
+    expect(screen.getByText('4')).toBeInTheDocument()
+    expect(screen.getByText('5')).toBeInTheDocument()
+  })
 
   it('limits display to 10 entries', () => {
     const manyEntries: LeaderboardEntry[] = Array.from({ length: 15 }, (_, i) => ({
@@ -63,29 +64,29 @@ describe('Leaderboard', () => {
       totalScore: 100 - i,
       totalTime: 60000 + i * 1000,
       date: '2024-01-01',
-    }));
-    render(<Leaderboard entries={manyEntries} />);
-    const list = screen.getByRole('list', { name: 'Top 10 scores' });
-    expect(list.children).toHaveLength(10);
-  });
+    }))
+    render(<Leaderboard entries={manyEntries} />)
+    const list = screen.getByRole('list', { name: LEADERBOARD.ariaLabel })
+    expect(list.children).toHaveLength(10)
+  })
 
   it('shows loading state when isLoading is true', () => {
-    render(<Leaderboard entries={[]} isLoading={true} />);
-    expect(screen.getByRole('status', { name: 'Loading leaderboard' })).toBeInTheDocument();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={[]} isLoading={true} />)
+    expect(screen.getByRole('status', { name: LEADERBOARD.loadingAria })).toBeInTheDocument()
+    expect(screen.getByText(LEADERBOARD.loading)).toBeInTheDocument()
+  })
 
   it('shows empty state when no entries and not loading', () => {
-    render(<Leaderboard entries={[]} />);
-    expect(screen.getByText('No scores yet. Be the first!')).toBeInTheDocument();
-  });
+    render(<Leaderboard entries={[]} />)
+    expect(screen.getByText(LEADERBOARD.empty)).toBeInTheDocument()
+  })
 
   it('applies top styling to first 3 entries', () => {
-    render(<Leaderboard entries={mockEntries} />);
-    const items = screen.getByRole('list', { name: 'Top 10 scores' }).children;
-    expect(items[0]).toHaveClass('leaderboard__entry--top');
-    expect(items[1]).toHaveClass('leaderboard__entry--top');
-    expect(items[2]).toHaveClass('leaderboard__entry--top');
-    expect(items[3]).not.toHaveClass('leaderboard__entry--top');
-  });
-});
+    render(<Leaderboard entries={mockEntries} />)
+    const items = screen.getByRole('list', { name: LEADERBOARD.ariaLabel }).children
+    expect(items[0]).toHaveClass('leaderboard__entry--top')
+    expect(items[1]).toHaveClass('leaderboard__entry--top')
+    expect(items[2]).toHaveClass('leaderboard__entry--top')
+    expect(items[3]).not.toHaveClass('leaderboard__entry--top')
+  })
+})

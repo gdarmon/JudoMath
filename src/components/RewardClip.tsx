@@ -1,25 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import type { JudoClip } from '../data/judoClips'
+import { REWARD } from '../i18n/he'
 import './RewardClip.css'
 
 export interface RewardClipProps {
   clip: JudoClip
-  /** Total clip window in seconds. Defaults to 30. */
   durationSeconds?: number
   onSkip: () => void
   onComplete: () => void
-  /** Called if the embed fails — parent can swap to another clip. */
   onError?: (failedYoutubeId: string) => void
 }
 
-/**
- * Reward overlay shown after a correct answer.
- * Embeds a YouTube clip (privacy-enhanced host, no related videos)
- * for ~30 seconds. The child can press the big "Skip" button at any time.
- *
- * If the iframe fails to load (e.g. the channel disabled embedding),
- * the parent is notified via onError and can pick a different clip.
- */
 export function RewardClip({
   clip,
   durationSeconds = 30,
@@ -31,7 +22,6 @@ export function RewardClip({
   const [iframeError, setIframeError] = useState(false)
   const completedRef = useRef(false)
 
-  // Reset countdown / error state when the clip changes (after a fallback).
   useEffect(() => {
     setSecondsLeft(durationSeconds)
     setIframeError(false)
@@ -41,13 +31,11 @@ export function RewardClip({
   const start = clip.start ?? 0
   const end = start + durationSeconds
 
-  // Privacy-friendly embed URL (youtube-nocookie), bounded play window.
   const embedUrl =
     `https://www.youtube-nocookie.com/embed/${encodeURIComponent(clip.youtubeId)}` +
     `?autoplay=1&start=${start}&end=${end}` +
     `&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&controls=1`
 
-  // Countdown timer — auto-completes when it reaches 0.
   useEffect(() => {
     const interval = setInterval(() => {
       setSecondsLeft((s) => {
@@ -77,13 +65,13 @@ export function RewardClip({
   }
 
   return (
-    <div className="reward-clip" role="dialog" aria-modal="true" aria-label="Prize clip">
+    <div className="reward-clip" role="dialog" aria-modal="true" aria-label={REWARD.dialogAria}>
       <div className="reward-clip__card">
-        <div className="reward-clip__header">
-          <span className="reward-clip__trophy" role="img" aria-hidden="true">🏅</span>
-          <h2 className="reward-clip__title">!כל הכבוד</h2>
+        <header className="reward-clip__header">
+          <span className="reward-clip__trophy" aria-hidden="true">🏅</span>
+          <h2 className="reward-clip__title">{REWARD.title}</h2>
           <p className="reward-clip__subtitle">{clip.title}</p>
-        </div>
+        </header>
 
         <div className="reward-clip__video-wrap">
           {!iframeError ? (
@@ -99,27 +87,29 @@ export function RewardClip({
           ) : (
             <div className="reward-clip__fallback" aria-hidden="true">
               <span className="reward-clip__fallback-emoji">🥋</span>
-              <span className="reward-clip__fallback-text">
-                The clip couldn't load — but you still earned a star!
-              </span>
+              <span className="reward-clip__fallback-text">{REWARD.fallbackText}</span>
             </div>
           )}
         </div>
 
-        <div className="reward-clip__footer">
-          <span className="reward-clip__countdown" aria-live="polite">
+        <footer className="reward-clip__footer">
+          <span
+            className="reward-clip__countdown is-ltr"
+            aria-live="polite"
+            aria-label={REWARD.countdownAria(secondsLeft)}
+          >
             {secondsLeft}s
           </span>
           <button
             type="button"
             className="reward-clip__skip"
             onClick={handleSkip}
-            aria-label="Skip clip and continue"
+            aria-label={REWARD.skipAria}
             autoFocus
           >
-            <span aria-hidden="true">⏭</span> Skip & Continue
+            <span aria-hidden="true">⏭</span> {REWARD.skip}
           </button>
-        </div>
+        </footer>
       </div>
     </div>
   )

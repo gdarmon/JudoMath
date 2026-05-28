@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { GameSession } from '../../components/GameSession'
 import { Belt } from '../../types'
+import { GAME, BELT_NAMES, REWARD } from '../../i18n/he'
 
 describe('GameSession', () => {
   beforeEach(() => {
@@ -22,7 +23,7 @@ describe('GameSession', () => {
 
   it('renders 6 multiple-choice answer buttons', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
-    const choiceButtons = screen.getAllByRole('button', { name: /^Answer / })
+    const choiceButtons = screen.getAllByRole('button', { name: /^תשובה / })
     expect(choiceButtons).toHaveLength(6)
   })
 
@@ -36,26 +37,25 @@ describe('GameSession', () => {
       />,
     )
 
-    expect(screen.getByText('Green')).toBeInTheDocument()
+    expect(screen.getByText(BELT_NAMES[Belt.Green])).toBeInTheDocument()
     expect(screen.getByText('⫼⫼')).toBeInTheDocument()
   })
 
   it('defaults to White belt with 0 stripes when not provided', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
-    expect(screen.getByText('White')).toBeInTheDocument()
+    expect(screen.getByText(BELT_NAMES[Belt.White])).toBeInTheDocument()
   })
 
   it('calls onBack when back button is clicked', () => {
     const onBack = vi.fn()
     render(<GameSession onComplete={vi.fn()} onBack={onBack} />)
-    fireEvent.click(screen.getByLabelText('Back to menu'))
+    fireEvent.click(screen.getByLabelText(GAME.back))
     expect(onBack).toHaveBeenCalledTimes(1)
   })
 
   it('shows feedback after picking a wrong answer and advances to next problem', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
 
-    // Read the correct answer from the rendered problem so we can pick a wrong one deterministically.
     const operands = document.querySelectorAll('.problem-display__operand')
     const operatorEl = document.querySelector('.problem-display__operator')
     const op1 = parseInt(operands[0]?.textContent ?? '0', 10)
@@ -63,22 +63,20 @@ describe('GameSession', () => {
     const operator = operatorEl?.textContent?.trim() ?? '+'
     const correct = operator === '+' ? op1 + op2 : op1 - op2
 
-    // Pick the first option that is NOT the correct answer.
-    const buttons = screen.getAllByRole('button', { name: /^Answer / })
-    const wrongBtn = buttons.find((b) => b.textContent && parseInt(b.textContent, 10) !== correct)
+    const buttons = screen.getAllByRole('button', { name: /^תשובה / })
+    const wrongBtn = buttons.find(
+      (b) => b.textContent && parseInt(b.textContent, 10) !== correct,
+    )
     expect(wrongBtn).toBeTruthy()
 
     fireEvent.click(wrongBtn!)
 
-    // Buttons should be disabled during feedback.
     for (const b of buttons) expect(b).toBeDisabled()
 
-    // Advance past feedback duration (~1500ms is enough).
     act(() => {
       vi.advanceTimersByTime(1700)
     })
 
-    // Should advance to problem 2/10.
     expect(screen.getByText('2/10')).toBeInTheDocument()
   })
 
@@ -92,17 +90,14 @@ describe('GameSession', () => {
     const operator = operatorEl?.textContent?.trim() ?? '+'
     const correct = operator === '+' ? op1 + op2 : op1 - op2
 
-    const correctBtn = screen.getByLabelText(`Answer ${correct}`)
-    fireEvent.click(correctBtn)
+    fireEvent.click(screen.getByLabelText(`תשובה ${correct}`))
 
-    // Advance past feedback flash.
     act(() => {
       vi.advanceTimersByTime(1000)
     })
 
-    // The reward overlay should now be visible.
-    expect(screen.getByRole('dialog', { name: 'Prize clip' })).toBeInTheDocument()
-    expect(screen.getByLabelText('Skip clip and continue')).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: REWARD.dialogAria })).toBeInTheDocument()
+    expect(screen.getByLabelText(REWARD.skipAria)).toBeInTheDocument()
   })
 
   it('advances to the next problem after the reward clip is skipped', () => {
@@ -115,30 +110,27 @@ describe('GameSession', () => {
     const operator = operatorEl?.textContent?.trim() ?? '+'
     const correct = operator === '+' ? op1 + op2 : op1 - op2
 
-    fireEvent.click(screen.getByLabelText(`Answer ${correct}`))
+    fireEvent.click(screen.getByLabelText(`תשובה ${correct}`))
     act(() => {
       vi.advanceTimersByTime(1000)
     })
 
-    // Skip the reward clip.
-    fireEvent.click(screen.getByLabelText('Skip clip and continue'))
+    fireEvent.click(screen.getByLabelText(REWARD.skipAria))
 
-    // Now we should be on problem 2.
     expect(screen.getByText('2/10')).toBeInTheDocument()
-    // Reward dialog should be gone.
-    expect(screen.queryByRole('dialog', { name: 'Prize clip' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: REWARD.dialogAria })).not.toBeInTheDocument()
   })
 
   it('shows inactivity reminder after 30 seconds', () => {
     render(<GameSession onComplete={vi.fn()} onBack={vi.fn()} />)
 
-    expect(screen.queryByText('!עדיין כאן? בוא נמשיך')).not.toBeInTheDocument()
+    expect(screen.queryByText(GAME.reminder)).not.toBeInTheDocument()
 
     act(() => {
       vi.advanceTimersByTime(30000)
     })
 
-    expect(screen.getByText('!עדיין כאן? בוא נמשיך')).toBeInTheDocument()
+    expect(screen.getByText(GAME.reminder)).toBeInTheDocument()
   })
 
   it('has a progress bar that reflects current progress', () => {

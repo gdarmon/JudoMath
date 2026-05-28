@@ -1,15 +1,16 @@
-/* Session Results - Child-friendly celebration screen */
+/* Session results — celebration, but calm. */
 
 .session-results {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 32px 16px;
+  gap: 22px;
+  padding: 32px 16px 40px;
   text-align: center;
+  min-height: 100svh;
+  background: var(--surface-soft);
 }
 
-/* Header with emoji and message */
 .session-results__header {
   display: flex;
   flex-direction: column;
@@ -18,14 +19,14 @@
 }
 
 .session-results__header--celebrate .session-results__emoji {
-  animation: celebrate-bounce 1s ease-in-out infinite;
+  animation: results-bounce 1.2s ease-in-out infinite;
 }
 
-@keyframes celebrate-bounce {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.1) rotate(-5deg); }
-  50% { transform: scale(1.2) rotate(0deg); }
-  75% { transform: scale(1.1) rotate(5deg); }
+@keyframes results-bounce {
+  0%, 100% { transform: scale(1)    rotate(0deg); }
+  25%      { transform: scale(1.08) rotate(-4deg); }
+  50%      { transform: scale(1.15) rotate(0deg); }
+  75%      { transform: scale(1.08) rotate(4deg); }
 }
 
 .session-results__emoji {
@@ -35,111 +36,102 @@
 }
 
 .session-results__message {
+  font-family: var(--font-display);
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 900;
   margin: 0;
-  color: #333;
+  color: var(--c-ink);
 }
 
-/* Score display */
+/* Score badge — circular, calm coral */
 .session-results__score {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 140px;
-  height: 140px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, var(--c-coral), var(--c-coral-deep));
+  box-shadow: 0 12px 30px rgba(255, 107, 107, 0.3);
 }
 
 .session-results__score-value {
-  font-size: 48px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 50px;
+  font-weight: 900;
   color: #ffffff;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Correct count */
 .session-results__count {
-  font-size: 24px;
-  font-weight: 500;
-  color: #555;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--c-text-soft);
   margin: 0;
 }
 
-/* Stripe earned indicator */
+/* Stripe earned */
 .session-results__stripe {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 24px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #fdd835, #ffee58);
-  box-shadow: 0 4px 12px rgba(253, 216, 53, 0.3);
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--c-sun), var(--c-sun-deep));
+  box-shadow: var(--shadow-sm);
   animation: stripe-pop 0.5s ease-out;
 }
 
 @keyframes stripe-pop {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.05); }
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.04); }
   100% { transform: scale(1); opacity: 1; }
 }
 
 .session-results__stripe-icon {
-  font-size: 28px;
-  font-weight: 700;
-  color: #333;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--c-ink);
 }
 
 .session-results__stripe-text {
   font-size: 20px;
-  font-weight: 600;
-  color: #333;
+  font-weight: 800;
+  color: var(--c-ink);
 }
 
-/* Belt promotion indicator */
+/* Belt promotion */
 .session-results__promotion {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 28px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #ff6b6b, #ffa500);
-  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
-  animation: promotion-glow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes promotion-glow {
-  0% { box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3); }
-  100% { box-shadow: 0 8px 30px rgba(255, 165, 0, 0.5); }
-}
-
-.session-results__promotion-icon {
-  font-size: 32px;
-}
-
-.session-results__promotion-text {
-  font-size: 20px;
-  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--c-grape), var(--c-grape-deep));
+  box-shadow: 0 10px 22px rgba(139, 92, 246, 0.3);
   color: #ffffff;
 }
+
+.session-results__promotion-icon { font-size: 32px; }
+.session-results__promotion-text { font-size: 19px; font-weight: 700; }
 
 .session-results__belt-name {
   display: inline-block;
   padding: 4px 12px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  margin-inline-start: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Action buttons */
 .session-results__actions {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  max-width: 320px;
-  margin-top: 16px;
+  max-width: 360px;
+  margin-top: 8px;
 }
 
 .session-results__button {
@@ -147,95 +139,58 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 20px 32px;
+  padding: 18px 24px;
   border: none;
-  border-radius: 24px;
-  font-size: 24px;
-  font-weight: 600;
+  border-radius: var(--radius-lg);
+  font-size: 22px;
+  font-weight: 800;
+  font-family: inherit;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  min-height: 72px;
+  box-shadow: var(--shadow-sm), var(--shadow-pop);
+  transition: transform 0.15s ease, box-shadow 0.18s ease;
+  min-height: 64px;
 }
 
 .session-results__button:hover {
-  transform: scale(1.04);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md), 0 8px 0 rgba(26, 26, 46, 0.12);
 }
 
 .session-results__button:active {
-  transform: scale(0.96);
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm), 0 2px 0 rgba(26, 26, 46, 0.12);
 }
 
 .session-results__button:focus-visible {
-  outline: 3px solid #333;
-  outline-offset: 3px;
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-sm);
 }
 
 .session-results__button--play-again {
-  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  background: linear-gradient(135deg, var(--c-mint), var(--c-mint-deep));
   color: #ffffff;
 }
 
 .session-results__button--main-menu {
-  background: linear-gradient(135deg, #2196f3, #64b5f6);
-  color: #ffffff;
+  background: var(--surface);
+  color: var(--c-ink);
 }
 
-.session-results__button-icon {
-  font-size: 32px;
-  line-height: 1;
-}
-
-.session-results__button-label {
-  font-size: 24px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 767px) {
-  .session-results__emoji {
-    font-size: 48px;
-  }
-
-  .session-results__message {
-    font-size: 26px;
-  }
-
-  .session-results__score {
-    width: 120px;
-    height: 120px;
-  }
-
-  .session-results__score-value {
-    font-size: 40px;
-  }
-
-  .session-results__count {
-    font-size: 20px;
-  }
-
-  .session-results__button {
-    padding: 16px 24px;
-    min-height: 64px;
-  }
-
-  .session-results__button-icon {
-    font-size: 28px;
-  }
-
-  .session-results__button-label {
-    font-size: 20px;
-  }
-}
+.session-results__button-icon { font-size: 28px; line-height: 1; }
+.session-results__button-label { font-size: 22px; }
 
 @media (min-width: 768px) {
-  .session-results__actions {
-    flex-direction: row;
-    max-width: 500px;
-    gap: 20px;
-  }
+  .session-results__actions { flex-direction: row; max-width: 540px; gap: 16px; }
+  .session-results__button { flex: 1; }
+}
 
-  .session-results__button {
-    flex: 1;
-  }
+@media (max-width: 767px) {
+  .session-results__emoji { font-size: 48px; }
+  .session-results__message { font-size: 24px; }
+  .session-results__score { width: 124px; height: 124px; }
+  .session-results__score-value { font-size: 40px; }
+  .session-results__count { font-size: 18px; }
+  .session-results__button { padding: 14px 20px; min-height: 56px; }
+  .session-results__button-label { font-size: 18px; }
+  .session-results__button-icon { font-size: 24px; }
 }
